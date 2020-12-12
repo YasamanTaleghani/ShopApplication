@@ -12,13 +12,17 @@ import android.view.ViewGroup;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.ProductionAdapter;
+import com.example.shopapplication.model.ProductionItem;
+import com.example.shopapplication.repository.ProductionRepository;
 
-import static com.example.shopapplication.activity.MainActivity.mProductionItems;
+import java.util.List;
+
 
 public class HighestRankFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private ProductionAdapter mAdapter;
+    private ProductionRepository mRepository;
 
     public HighestRankFragment() {
         // Required empty public constructor
@@ -34,6 +38,7 @@ public class HighestRankFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -53,9 +58,10 @@ public class HighestRankFragment extends Fragment {
     }
 
     private void initViews() {
+        List<ProductionItem> items = mRepository.getItems();
         mRecyclerView.setHasFixedSize(true);
-        if (mProductionItems.size()>0){
-            mAdapter = new ProductionAdapter(getContext(), mProductionItems);
+        if (items.size()>0){
+            mAdapter = new ProductionAdapter(getContext(), items);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         }

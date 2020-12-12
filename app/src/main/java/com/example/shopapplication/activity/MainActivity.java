@@ -14,6 +14,7 @@ import com.example.shopapplication.fragment.HighestRankFragment;
 import com.example.shopapplication.fragment.MostVisitedFragment;
 import com.example.shopapplication.fragment.NewestItemsFragment;
 import com.example.shopapplication.model.ProductionItem;
+import com.example.shopapplication.repository.ProductionRepository;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -24,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager2 mViewPager;
     private PageAdapter mPageAdapter;
-    public static ArrayList<ProductionItem> mProductionItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

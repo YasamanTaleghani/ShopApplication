@@ -14,13 +14,14 @@ import com.example.shopapplication.R;
 import com.example.shopapplication.model.ProductionItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.ProductionHolder> {
 
     private Context mContext;
-    private ArrayList<ProductionItem> mItems;
+    private List<ProductionItem> mItems;
 
-    public ProductionAdapter(Context context, ArrayList<ProductionItem> items) {
+    public ProductionAdapter(Context context, List<ProductionItem> items) {
         mContext = context;
         mItems = items;
     }
@@ -39,7 +40,6 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Pr
     @Override
     public void onBindViewHolder(@NonNull ProductionHolder holder, int position) {
         holder.mTextView.setText(mItems.get(position).getTitle());
-
     }
 
     @Override
