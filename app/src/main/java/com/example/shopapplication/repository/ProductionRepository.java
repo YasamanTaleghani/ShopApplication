@@ -1,11 +1,12 @@
 package com.example.shopapplication.repository;
 
+import android.util.Log;
+
 import com.example.shopapplication.model.ProductionItem;
 import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
-import com.example.shopapplication.retrofitModel.ProductsItem;
-import com.example.shopapplication.retrofitModel.ProductsResponse;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,11 +14,14 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProductionRepository {
 
+    public static final String TAG = "ProductionRepository";
     private List<ProductionItem> mItems= new ArrayList<>();
     private ShopService mShopService;
+    private Retrofit mRetrofit;
 
     //Getter & Setter
     public List<ProductionItem> getItems() {
@@ -29,28 +33,27 @@ public class ProductionRepository {
 
     //Constructor
     public ProductionRepository() {
-        mShopService = RetrofitInstance.getInstance().create(ShopService.class);
+        mRetrofit =  RetrofitInstance.getInstance();
+        mShopService = mRetrofit.create(ShopService.class);
     }
 
     //Methods
     public List<ProductionItem> fetchItems(){
 
-        Call<ProductsResponse> call =
+        Call<List<ProductionItem>> call =
                 mShopService.listItems(NetworkParams.PRODUCTS_LIST);
         try {
-            Response<ProductsResponse> response = call.execute();
-            ProductsResponse productsResponse = response.body();
-            List<ProductionItem> productionItems = new ArrayList<>();
-            for (ProductsItem item :productsResponse.getProducts()) {
-                ProductionItem productionItem =
-                        new ProductionItem(item.getId(), item.getTitle(), item.getPermalink());
-                productionItems.add(productionItem);
-            }
-            return productionItems;
+            Response<List<ProductionItem>> response = call.execute();
+            return response.body();
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
             return null;
         }
     }
 
+    //TODO
+    private void fetchItemsAsync(){
+
+    }
 }

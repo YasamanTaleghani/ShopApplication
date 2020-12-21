@@ -38,7 +38,7 @@ public class HighestRankFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mRepository = new ProductionRepository();
     }
 
     @Override
@@ -49,6 +49,7 @@ public class HighestRankFragment extends Fragment {
 
        findViews(view);
        initViews();
+       mRepository.fetchItems();
 
        return view;
     }

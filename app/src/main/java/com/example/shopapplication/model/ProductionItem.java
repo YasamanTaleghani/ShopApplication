@@ -1,18 +1,24 @@
 package com.example.shopapplication.model;
 
+import com.example.shopapplication.retrofitModel.ImagesItem;
+
+import java.util.List;
+
 public class ProductionItem {
     private int mId;
     private String mTitle;
-    private String mUrl;
+    private String mDescription;
+    private List<Image> mImages;
 
     //Constructor
     public ProductionItem() {
     }
 
-    public ProductionItem(int id, String title, String url) {
+    public ProductionItem(int id, String title, String description, List<Image> images) {
         mId = id;
         mTitle = title;
-        mUrl = url;
+        mDescription = description;
+        mImages = images;
     }
 
     //Getter & Setter
@@ -32,11 +38,19 @@ public class ProductionItem {
         mTitle = title;
     }
 
-    public String getUrl() {
-        return mUrl;
+    public String getDescription() {
+        return mDescription;
     }
 
-    public void setUrl(String url) {
-        mUrl = url;
+    public void setDescription(String description) {
+        mDescription = description;
+    }
+
+    public List<Image> getImages() {
+        return mImages;
+    }
+
+    public void setImages(List<Image> images) {
+        mImages = images;
     }
 }
