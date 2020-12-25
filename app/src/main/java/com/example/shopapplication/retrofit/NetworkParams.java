@@ -13,11 +13,10 @@ public class NetworkParams {
     public static final String ORDER_BY_DATE = "date";
     public static final String ASC = "asc";
 
-    public static final Map<String,String> PRODUCTS_LIST = new HashMap<String,String>(){{
+    public static final Map<String,String> BASE_OPTIONS = new HashMap<String,String>(){{
         put("consumerKey", CONSUMER_KEY);
         put("consumerSecret", CONSUMER_SECRET);
     }};
-
 
     public static final Map<String,String> HIGHEST_RATE_PRODUCTS_LIST = new HashMap<String,String>(){{
         put("order_by", ORDER_BY_RATING);
@@ -27,10 +26,17 @@ public class NetworkParams {
     }};
 
     public static final Map<String,String> NEWEST_PRODUCTS_LIST = new HashMap<String,String>(){{
-        put("order_by", ORDER_BY_RATING);
+        put("order_by", ORDER_BY_DATE);
         put("consumerKey", CONSUMER_KEY);
         put("consumerSecret", CONSUMER_SECRET);
     }};
 
+    public static Map<String, String> getHighestRateOptions() {
+        Map<String, String> popularOptions = new HashMap<>();
+        popularOptions.putAll(BASE_OPTIONS);
+        popularOptions.putAll(HIGHEST_RATE_PRODUCTS_LIST);
+
+        return popularOptions;
+    }
 
 }

@@ -15,6 +15,7 @@ import com.example.shopapplication.adapter.ProductionAdapter;
 import com.example.shopapplication.model.ProductionItem;
 import com.example.shopapplication.repository.ProductionRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -23,6 +24,7 @@ public class HighestRankFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ProductionAdapter mAdapter;
     private ProductionRepository mRepository;
+    private List<ProductionItem> mNewestItems = new ArrayList<>();
 
     public HighestRankFragment() {
         // Required empty public constructor
@@ -48,8 +50,8 @@ public class HighestRankFragment extends Fragment {
        View view = inflater.inflate(R.layout.fragment_highest_rank, container, false);
 
        findViews(view);
-       initViews();
-       mRepository.fetchItems();
+       //initViews();
+       //mNewestItems = mRepository.fetchItemsAsync();
 
        return view;
     }
@@ -59,7 +61,7 @@ public class HighestRankFragment extends Fragment {
     }
 
     private void initViews() {
-        List<ProductionItem> items = mRepository.getItems();
+        List<ProductionItem> items = mRepository.fetchItemsAsync();
         mRecyclerView.setHasFixedSize(true);
         if (items.size()>0){
             mAdapter = new ProductionAdapter(getContext(), items);

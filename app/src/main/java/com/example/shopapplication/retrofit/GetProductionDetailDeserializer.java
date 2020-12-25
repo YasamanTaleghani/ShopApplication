@@ -2,7 +2,6 @@ package com.example.shopapplication.retrofit;
 
 import com.example.shopapplication.model.Image;
 import com.example.shopapplication.model.ProductionItem;
-import com.example.shopapplication.retrofitModel.ImagesItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -33,6 +32,7 @@ public class GetProductionDetailDeserializer implements JsonDeserializer<Product
             final JsonObject itemJsonObject = itemJsonElement.getAsJsonObject();
             final int objId = itemJsonObject.get("id").getAsInt();
             final String objSrc = itemJsonObject.get("src").getAsString();
+
             Image image = new Image(objId, objSrc);
             imagesItems.add(image);
         }

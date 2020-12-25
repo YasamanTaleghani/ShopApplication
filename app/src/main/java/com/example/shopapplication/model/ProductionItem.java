@@ -1,6 +1,5 @@
 package com.example.shopapplication.model;
 
-import com.example.shopapplication.retrofitModel.ImagesItem;
 
 import java.util.List;
 
@@ -8,13 +7,15 @@ public class ProductionItem {
     private int mId;
     private String mTitle;
     private String mDescription;
+    //private String mDateCreated;
     private List<Image> mImages;
 
     //Constructor
     public ProductionItem() {
     }
 
-    public ProductionItem(int id, String title, String description, List<Image> images) {
+    public ProductionItem
+            (int id, String title, String description, List<Image> images) {
         mId = id;
         mTitle = title;
         mDescription = description;
@@ -53,4 +54,12 @@ public class ProductionItem {
     public void setImages(List<Image> images) {
         mImages = images;
     }
+
+    /*public String getDateCreated() {
+        return mDateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        mDateCreated = dateCreated;
+    }*/
 }

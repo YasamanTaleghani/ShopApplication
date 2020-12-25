@@ -46,7 +46,7 @@ public class NewestItemsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_newest_items, container, false);
 
         findViews(view);
-        initViews();
+        //initViews();
 
         return view;
     }
@@ -56,7 +56,7 @@ public class NewestItemsFragment extends Fragment {
     }
 
     private void initViews() {
-        List<ProductionItem> items = mRepository.getItems();
+        List<ProductionItem> items = mRepository.getNewestItems();
         mRecyclerView.setHasFixedSize(true);
         if (items.size()>0){
             mAdapter = new ProductionAdapter(getContext(), items);
