@@ -6,37 +6,49 @@ import java.util.Map;
 public class NetworkParams {
 
     public static final String BASE_URL = "https://woocommerce.maktabsharif.ir/wp-json/wc/v3/";
-    public static final String PATH_PRODUCTS = "products";
+    public static final String PATH_PRODUCTS = "products/";
     public static final String CONSUMER_KEY = "ck_f025265e3479f7bee8e93bffe5685517b93ec27d";
     public static final String CONSUMER_SECRET = "cs_27b19e572ac9cf1333d4d53f7082a15e9fb6a2b0";
+    public static final String PRODUCTION_ID = "products/{id}";
+    public static final String PRODUCTION_CATEGORIES = "products/categories/";
     public static final String ORDER_BY_RATING = "rating";
     public static final String ORDER_BY_DATE = "date";
     public static final String ASC = "asc";
 
     public static final Map<String,String> BASE_OPTIONS = new HashMap<String,String>(){{
-        put("consumerKey", CONSUMER_KEY);
-        put("consumerSecret", CONSUMER_SECRET);
+        put("consumer_key", CONSUMER_KEY);
+        put("consumer_secret", CONSUMER_SECRET);
     }};
 
     public static final Map<String,String> HIGHEST_RATE_PRODUCTS_LIST = new HashMap<String,String>(){{
         put("order_by", ORDER_BY_RATING);
         put("order", ASC);
-        put("consumerKey", CONSUMER_KEY);
-        put("consumerSecret", CONSUMER_SECRET);
     }};
 
     public static final Map<String,String> NEWEST_PRODUCTS_LIST = new HashMap<String,String>(){{
         put("order_by", ORDER_BY_DATE);
-        put("consumerKey", CONSUMER_KEY);
-        put("consumerSecret", CONSUMER_SECRET);
     }};
 
-    public static Map<String, String> getHighestRateOptions() {
-        Map<String, String> popularOptions = new HashMap<>();
-        popularOptions.putAll(BASE_OPTIONS);
-        popularOptions.putAll(HIGHEST_RATE_PRODUCTS_LIST);
+    public static Map<String, String> getBaseOptions() {
+        Map<String, String> baseOptions = new HashMap<>();
+        baseOptions.putAll(BASE_OPTIONS);
 
-        return popularOptions;
+        return baseOptions;
     }
 
+    public static Map<String, String> getHighestRateOptions() {
+        Map<String, String> highestRateOptions = new HashMap<>();
+        highestRateOptions.putAll(BASE_OPTIONS);
+        highestRateOptions.putAll(HIGHEST_RATE_PRODUCTS_LIST);
+
+        return highestRateOptions;
+    }
+
+    public static Map<String, String> getNewestOptions() {
+        Map<String, String> newestOptions = new HashMap<>();
+        newestOptions.putAll(BASE_OPTIONS);
+        newestOptions.putAll(NEWEST_PRODUCTS_LIST);
+
+        return newestOptions;
+    }
 }

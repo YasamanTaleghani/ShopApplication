@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shopapplication.R;
-import com.example.shopapplication.model.ProductionItem;
+import com.example.shopapplication.retrofit.model.ProductsItem;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.ProductionHolder> {
 
     private Context mContext;
-    private List<ProductionItem> mItems;
+    private List<ProductsItem> mItems;
 
-    public ProductionAdapter(Context context, List<ProductionItem> items) {
+    public ProductionAdapter(Context context, List<ProductsItem> items) {
         mContext = context;
         mItems = items;
     }
@@ -39,7 +40,7 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Pr
 
     @Override
     public void onBindViewHolder(@NonNull ProductionHolder holder, int position) {
-        holder.mTextView.setText(mItems.get(position).getTitle());
+        holder.mTextView.setText(mItems.get(position).getName());
     }
 
     @Override

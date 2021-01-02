@@ -17,23 +17,24 @@ import android.view.ViewGroup;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
-import com.example.shopapplication.model.ProductionItem;
+import com.example.shopapplication.repository.ProductionRepository;
+import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    private TabLayout mTabLayout;
-    private ViewPager2 mViewPager;
-    private PageAdapter mPageAdapter;
-    private ArrayList<ProductionItem> mNewestItems = new ArrayList<>();
-    private ArrayList<ProductionItem> mHighestRankedItems = new ArrayList<>();
+
+    private List<ProductsItem> mNewestItems = new ArrayList<>();
+    private List<ProductsItem> mHighestRankedItems = new ArrayList<>();
     private RecyclerViewAdapter mNewestItemsAdapter;
     private RecyclerViewAdapter mHighestRankedAdapter;
     private RecyclerView mRecyclerViewNewestItems;
     private RecyclerView mRecyclerViewHighestRanked;
+    private ProductionRepository mRepository;
 
     public MainFragment() {
         // Required empty public constructor
@@ -49,6 +50,20 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mRepository = ProductionRepository.getInstance();
+        mRepository.fetchItemsAsyncNewestProducts(new ProductionRepository.CallBacksNewestItems() {
+            @Override
+            public void onNewestItemsResponse(List<ProductsItem> items) {
+                setNewestItemsAdapter(items);
+            }
+        });
+
+        mRepository.fetchItemsAsyncHighestRate(new ProductionRepository.CallBacksHighestRankedItems() {
+            @Override
+            public void onHighestRankedItemsResponse(List<ProductsItem> items) {
+                setHighestRankedItemsAdapter(items);
+            }
+        });
     }
 
     @Override
@@ -58,97 +73,37 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         findViews(view);
-        //fetchItems
-        initView();
-        setAdapter();
-
         return view;
     }
 
     private void findViews(View view) {
-        mTabLayout = view.findViewById(R.id.tabLayout);
-        mViewPager = view.findViewById(R.id.viewPager);
+        mRecyclerViewNewestItems = view.findViewById(R.id.recyclerViewNewestItems);
+        mRecyclerViewHighestRanked = view.findViewById(R.id.recyclerViewHighestRanked);
     }
 
-    private void initView() {
-        mPageAdapter = new PageAdapter(getActivity());
-        mViewPager.setAdapter(mPageAdapter);
+    private void setNewestItemsAdapter(List<ProductsItem> items) {
 
-        TabLayoutMediator tabLayoutMediator = new TabLayoutMediator
-                (mTabLayout, mViewPager, new TabLayoutMediator.TabConfigurationStrategy() {
-                    @Override
-                    public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
-                        switch (position) {
-                            case 0: {
-                                tab.setText(R.string.newestItems);
-                                break;
-                            }
-                            case 1: {
-                                tab.setText(R.string.mostVisitedItems);
-                                break;
-                            }
-                            case 2: {
-                                tab.setText(R.string.highestRankedItems);
-                                break;
-                            }
-                        }
-                    }
-                });
-
-        tabLayoutMediator.attach();
-    }
-
-    private class PageAdapter extends FragmentStateAdapter {
-
-        public PageAdapter(@NonNull FragmentActivity fragmentActivity) {
-            super(fragmentActivity);
-        }
-
-        @NonNull
-        @Override
-        public Fragment createFragment(int position) {
-            switch (position) {
-                case 0:
-                    NewestItemsFragment newestItemsFragment = NewestItemsFragment.newInstance();
-                    return newestItemsFragment;
-                case 1:
-                    MostVisitedFragment mostVisitedFragment = MostVisitedFragment.newInstance();
-                    return mostVisitedFragment;
-                case 2:
-                    HighestRankFragment highestRankFragment = HighestRankFragment.newInstance();
-                    return highestRankFragment;
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return 3;
-        }
-
-    }
-
-    private void setAdapter() {
-
-        if (mNewestItems.size()>0){
-            mNewestItemsAdapter = new RecyclerViewAdapter(getContext(), mNewestItems);
+        if (items.size()>0){
+            mNewestItemsAdapter = new RecyclerViewAdapter(getActivity(), items);
             mRecyclerViewNewestItems.setAdapter(mNewestItemsAdapter);
             mRecyclerViewNewestItems.setLayoutManager
                     (new LinearLayoutManager(
-                            getContext(),
+                            getActivity(),
                             LinearLayoutManager.HORIZONTAL,
-                            false));
+                            true));
         }
+    }
 
-        if (mHighestRankedItems.size()>0){
-            mHighestRankedAdapter = new RecyclerViewAdapter(getContext(), mHighestRankedItems);
+    private void setHighestRankedItemsAdapter(List<ProductsItem> items){
+        if (items.size()>0){
+            mHighestRankedAdapter = new RecyclerViewAdapter(getActivity(), items);
             mRecyclerViewHighestRanked.setAdapter(mHighestRankedAdapter);
             mRecyclerViewHighestRanked.setLayoutManager
                     (new LinearLayoutManager(
-                            getContext(),
+                            getActivity(),
                             LinearLayoutManager.HORIZONTAL,
-                            false));
+                            true));
         }
     }
+
 }

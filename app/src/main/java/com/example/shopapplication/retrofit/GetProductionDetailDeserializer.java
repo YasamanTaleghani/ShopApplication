@@ -1,7 +1,8 @@
 package com.example.shopapplication.retrofit;
 
-import com.example.shopapplication.model.Image;
-import com.example.shopapplication.model.ProductionItem;
+import android.media.Image;
+
+import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -13,10 +14,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetProductionDetailDeserializer implements JsonDeserializer<ProductionItem> {
+public class GetProductionDetailDeserializer implements JsonDeserializer<ProductsItem> {
 
     @Override
-    public ProductionItem deserialize(
+    public ProductsItem deserialize(
             JsonElement json, Type typeOfT, JsonDeserializationContext context)
             throws JsonParseException {
 
@@ -33,11 +34,9 @@ public class GetProductionDetailDeserializer implements JsonDeserializer<Product
             final int objId = itemJsonObject.get("id").getAsInt();
             final String objSrc = itemJsonObject.get("src").getAsString();
 
-            Image image = new Image(objId, objSrc);
-            imagesItems.add(image);
         }
 
-        ProductionItem productionItem = new ProductionItem(id, title, description, imagesItems);
+        ProductsItem productionItem = new ProductsItem();
 
         return productionItem;
     }

@@ -1,83 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragment.MainFragment"
-    android:orientation="vertical">
+    android:layout_width="match_parent">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tabIndicatorFullWidth="true"
-        tabIndicatorGravity="center"
-        tabTextColor="@color/colorTextPrimary"
-        tabIndicatorHeight="60dp"
-        app:tabIndicatorColor="@color/orangePrimaryDark"
-        tabIndicator="@drawable/tab_indicator"
-        android:paddingBottom="6dp">
-    </com.google.android.material.tabs.TabLayout>
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".fragment.MainFragment"
+        android:orientation="vertical">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </androidx.viewpager2.widget.ViewPager2>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="جدیدترین محصولات"
+            android:layout_gravity="end"
+            android:textSize="18dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/orangePrimaryDark">
+        </TextView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="جدیدترین محصولات"
-        android:layout_gravity="end"
-        android:textSize="18dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/orangePrimaryDark">
-    </TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/orangePrimaryDark"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="220dp"
+            android:layout_marginEnd="8dp">
+        </View>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/orangePrimaryDark"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginEnd="8dp">
-    </View>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewNewestItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewNewestItems"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
-    </androidx.recyclerview.widget.RecyclerView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="بالاترین امتیاز"
+            android:layout_gravity="end"
+            android:textSize="18dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/orangePrimaryDark">
+        </TextView>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="بالاترین امتیاز"
-        android:layout_gravity="end"
-        android:textSize="18dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/orangePrimaryDark">
-    </TextView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/orangePrimaryDark"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="220dp"
+            android:layout_marginEnd="8dp">
+        </View>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/orangePrimaryDark"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginEnd="8dp">
-    </View>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewHighestRanked"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+        </androidx.recyclerview.widget.RecyclerView>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewHighestRanked"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
-    </androidx.recyclerview.widget.RecyclerView>
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
