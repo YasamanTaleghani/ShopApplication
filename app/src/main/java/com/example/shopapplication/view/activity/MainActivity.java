@@ -21,6 +21,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -31,6 +33,7 @@ import com.example.shopapplication.helper.NavigationManager;
 import com.example.shopapplication.view.fragment.MainFragment;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -45,13 +48,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "categories";
     public static final String EXTRA_CATEGORY_NAME =
             "com.example.shopapplication.view.activity.categoryName";
-    private ProductionRepository mRepository;
-    private List<String> mCategoriesNames= new ArrayList<>();
+
+    private ProductionViewModel mViewModel;
+
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
-    private String[] items;
+    //
     private ExpandableListView mExpandableListView;
     private ExpandableListAdapter mExpandableListAdapter;
     private List<String> mListTitle;
@@ -63,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.drawer_layout);
 
+        addingFragment();
+        findView();
+        initItems();
+        fetchCategories();
+    }
+
+    private void addingFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         //check if fragment exists in container (configuration changes save the fragments)
@@ -75,24 +86,19 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container, MainFragment.newInstance())
                     .commit();
         }
-        findView();
-        initItems();
-        //fetchCategories();
     }
 
     private void fetchCategories() {
-        mRepository = ProductionRepository.getInstance();
-        /*mRepository.fetchCategoriesAsync(new ProductionRepository.CallBackCategories() {
+        mViewModel =  new ViewModelProvider(this).get(ProductionViewModel.class);
+        mViewModel.fetchCategoriesAsync();
+        mViewModel.getCategoryItemsLiveData().observe(this, new Observer<List<CategoryResponse>>() {
             @Override
-            public void onCategoriesResponse(List<CategoryResponse> responses) {
-
+            public void onChanged(List<CategoryResponse> responses) {
                 for (int i = 0; i < responses.size() ; i++) {
                     Log.d(TAG, "category" + i + "is: " + responses.get(i).getName());
                 }
-
-                initView(responses);
             }
-        });*/
+        });
     }
 
     @Override
@@ -133,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initItems() {
         mNavigationManager = FragmentNavigaionManager.getInstance(this);
-        items = new String[]{"کالای دیجیتال", "مد و پوشاک",
-                "کتاب، لوازم تحریر و هنر", "خوردنی و آشامیدنی"};
 
 
         View ListHeaderView = getLayoutInflater().inflate
@@ -173,20 +177,27 @@ public class MainActivity extends AppCompatActivity {
         title.add(getResources().getString(R.string.fashion));
         title.add(getResources().getString(R.string.bookArt));
         title.add(getResources().getString(R.string.food));
+        title.add(getResources().getString(R.string.beauty));
+        title.add(getResources().getString(R.string.sale));
+        title.add(getResources().getString(R.string.home));
 
-        List<String> child1 = new ArrayList<>();
-        child1.add("موبایل");
-        child1.add("لپ تاپ");
-
-        List<String> child2 = Arrays.asList("پوشاک زنانه", "پوشاک مردانه", "کفش");
-        List<String> child3 = Arrays.asList("کتاب و مجلات", "کتاب و هنر");
-        List<String> child4 = Arrays.asList("خوراکی", "آشامیدنی");
+        List<String> child1 = Arrays.asList("دیجیتال", "گوشی هوشمند", "ساعت و مچ بند هوشمند");
+        List<String> child2 = Arrays.asList
+                ("پوشاک زنانه", "پوشاک مردانه", "کفش", "کیف و کوله", "مد و پوشاک");
+        List<String> child3 = Arrays.asList("فیلم", "کتاب و مجله", "کتاب و هنر");
+        List<String> child4 = Arrays.asList("سوپرمارکت", "لبنیات", "مواد پروتئینی", "نوشیدنی ها");
+        List<String> child5 = Arrays.asList( "بهداشت");
+        List<String> child6 = Arrays.asList( "فروش ویژه");
+        List<String> child7 = Arrays.asList( "لوازم منزل");
 
         mListChild = new TreeMap<>();
         mListChild.put(title.get(0), child1);
         mListChild.put(title.get(1), child2);
         mListChild.put(title.get(2), child3);
         mListChild.put(title.get(3), child4);
+        mListChild.put(title.get(4), child5);
+        mListChild.put(title.get(5), child6);
+        mListChild.put(title.get(6), child7);
 
         mListTitle = new ArrayList<>(mListChild.keySet());
     }

@@ -13,5 +13,8 @@
     <string name="digital">کالای دیجیتال</string>
     <string name="fashion">مد و پوشاک</string>
     <string name="bookArt">کتاب، لوازم تحریر و هنر</string>
-    <string name="food">خوردنی و آشامیدنی</string>
+    <string name="food">سوپرمارکت</string>
+    <string name="beauty">زیبایی و سلامت</string>
+    <string name="sale">فروش ویژه</string>
+    <string name="home">خانه و آشپزخانه</string>
 </resources>

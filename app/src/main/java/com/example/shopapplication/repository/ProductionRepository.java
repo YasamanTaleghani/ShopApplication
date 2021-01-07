@@ -165,10 +165,5 @@ public class ProductionRepository {
         });
     }
 
-    //TODO: search
-    /*public void fetchSearchItemsAsync(){
-        Call<List<ProductsItem>> call =
-                mShopService.
-    }*/
 
 }

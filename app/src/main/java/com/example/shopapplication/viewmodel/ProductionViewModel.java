@@ -55,4 +55,8 @@ public class ProductionViewModel extends ViewModel {
     public void fetchItem(int id){
         mRepository.fetchItem(id);
     }
+
+    public void fetchCategoriesAsync(){
+        mRepository.fetchCategoriesAsync();
+    }
 }
