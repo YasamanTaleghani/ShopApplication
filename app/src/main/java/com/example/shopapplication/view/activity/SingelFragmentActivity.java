@@ -1,4 +1,4 @@
-package com.example.shopapplication.activity;
+package com.example.shopapplication.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;

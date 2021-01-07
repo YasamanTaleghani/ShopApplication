@@ -2,9 +2,14 @@ package com.example.shopapplication.repository;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
+import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 
 
@@ -22,10 +27,39 @@ public class ProductionRepository {
     private List<ProductsItem> mNewestItems = new ArrayList<>();
     private ShopService mShopService;
     private static ProductionRepository mRepository = null;
+    public static final int PAGE_HIGHEST_RANKED_ITEMS = 1;
+    public static final int PAGE_NEWEST_ITEMS = 1;
+
+    private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData=new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mNewestItemsLiveData= new MutableLiveData<>();
+    private MutableLiveData<ProductsItem> mItemLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<CategoryResponse>> mCategoryItemsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
 
     //Constructor
     private ProductionRepository() {
         mShopService = RetrofitInstance.getInstance().create(ShopService.class);
+    }
+
+    //Getter
+    public MutableLiveData<List<ProductsItem>> getHighestRankedItemsLiveData() {
+        return mHighestRankedItemsLiveData;
+    }
+
+    public MutableLiveData<List<ProductsItem>> getNewestItemsLiveData() {
+        return mNewestItemsLiveData;
+    }
+
+    public MutableLiveData<ProductsItem> getItemLiveData() {
+        return mItemLiveData;
+    }
+
+    public MutableLiveData<List<CategoryResponse>> getCategoryItemsLiveData() {
+        return mCategoryItemsLiveData;
+    }
+
+    public MutableLiveData<List<ProductsItem>> getSearchItemsLiveData() {
+        return mSearchItemsLiveData;
     }
 
     //Methods
@@ -39,27 +73,37 @@ public class ProductionRepository {
         }
     }
 
-    public List<ProductsItem> fetchItemsHighestRate(){
-
+    public void fetchItemsAsyncHighestRate(){
         Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getHighestRateOptions());
-
-        try {
-            List<ProductsItem> response = call.execute().body();
-            return response;
-
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-            return null;
-        }
-    }
-
-    public void fetchItemsAsyncHighestRate(CallBacksHighestRankedItems callBacks){
-        Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getHighestRateOptions());
+                mShopService.listItems(
+                        NetworkParams.getHighestRateOptions(), PAGE_HIGHEST_RANKED_ITEMS);
 
         call.enqueue(new Callback<List<ProductsItem>>() {
 
+            @Override
+            public void onResponse
+            (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
+                List<ProductsItem> productsItems = response.body();
+
+                //Update RecyclerView
+                mHighestRankedItemsLiveData.setValue(productsItems);
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                Log.e(TAG, t.getMessage(), t);
+            }
+
+        });
+    }
+
+    public void fetchItemsAsyncNewestProducts(){
+        Call<List<ProductsItem>> call =
+                mShopService.listItems(NetworkParams.getNewestOptions(),PAGE_NEWEST_ITEMS);
+
+        call.enqueue(new Callback<List<ProductsItem>>() {
+
+            //this run on main thread
             @Override
             public void onResponse
             (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
@@ -70,45 +114,7 @@ public class ProductionRepository {
                 }
 
                 //Update RecyclerView
-                callBacks.onHighestRankedItemsResponse(productsItems);
-            }
-
-            @Override
-            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
-                Log.e(TAG, t.getMessage(), t);
-            }
-
-        });
-    }
-
-    public List<ProductsItem> fetchItemsNewestProducts(){
-
-        Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getNewestOptions());
-        try {
-            List<ProductsItem> response = call.execute().body();
-            return response;
-
-        } catch (IOException e) {
-            Log.e(TAG, e.getMessage(), e);
-            return null;
-        }
-    }
-
-    public void fetchItemsAsyncNewestProducts(CallBacksNewestItems callBacks){
-        Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getNewestOptions());
-
-        call.enqueue(new Callback<List<ProductsItem>>() {
-
-            //this run on main thread
-            @Override
-            public void onResponse
-            (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
-                List<ProductsItem> productsItems = response.body();
-
-                //Update RecyclerView
-                callBacks.onNewestItemsResponse(productsItems);
+                mNewestItemsLiveData.setValue(productsItems);
             }
 
             //this run on main thread
@@ -120,7 +126,7 @@ public class ProductionRepository {
 
     }
 
-    public void fetchItem(int id, CallBackItem callBackItem){
+    public void fetchItem(int id){
         Call<ProductsItem> call = mShopService.item(id, NetworkParams.getBaseOptions());
 
         call.enqueue(new Callback<ProductsItem>() {
@@ -128,9 +134,9 @@ public class ProductionRepository {
             public void onResponse(Call<ProductsItem> call, Response<ProductsItem> response) {
                 ProductsItem item = response.body();
 
-                Log.d(TAG, "Get item: " + response.body().getName());
+                //Log.d(TAG, "Get item: " + response.body().getName());
 
-                callBackItem.onItemResponse(item);
+                mItemLiveData.setValue(item);
             }
 
             @Override
@@ -140,15 +146,29 @@ public class ProductionRepository {
         });
     }
 
-    public interface CallBacksNewestItems{
-        void onNewestItemsResponse(List<ProductsItem> items);
+    public void fetchCategoriesAsync(){
+        Call<List<CategoryResponse>> call =
+                mShopService.listCategories(NetworkParams.getBaseOptions());
+
+        call.enqueue(new Callback<List<CategoryResponse>>() {
+            @Override
+            public void onResponse(Call<List<CategoryResponse>> call, Response<List<CategoryResponse>> response) {
+                List<CategoryResponse> categoryResponses = response.body();
+
+                mCategoryItemsLiveData.setValue(categoryResponses);
+            }
+
+            @Override
+            public void onFailure(Call<List<CategoryResponse>> call, Throwable t) {
+
+            }
+        });
     }
 
-    public interface CallBacksHighestRankedItems{
-        void onHighestRankedItemsResponse(List<ProductsItem> items);
-    }
+    //TODO: search
+    /*public void fetchSearchItemsAsync(){
+        Call<List<ProductsItem>> call =
+                mShopService.
+    }*/
 
-    public interface CallBackItem{
-        void onItemResponse(ProductsItem item);
-    }
 }

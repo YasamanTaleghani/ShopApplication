@@ -2,7 +2,6 @@ package com.example.shopapplication.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaMetadataRetriever;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.shopapplication.R;
-import com.example.shopapplication.activity.DetailActivity;
+import com.example.shopapplication.retrofit.model.ImagesItem;
+import com.example.shopapplication.view.activity.DetailActivity;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.viewHolder>{
@@ -44,16 +43,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerViewAdapter.viewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         holder.mTextView.setText(mItems.get(position).getName());
-        String image = mItems.get(position).getImages().get(0).getSrc();
-        if (image != null){
-            Picasso.get()
-                    .load(image)
+        List<ImagesItem> images =(mItems.get(position).getImages());
+        if (images.size()>0){
+            Glide
+                    .with(mContext)
+                    .load(images.get(0).getSrc())
                     .placeholder(R.drawable.ic_loading)
                     .into(holder.mImageView);
         }
-        holder.mTextViewPrice.setText(mItems.get(position).getPrice() + " ریال ");
+        holder.mTextViewPrice.setText(mItems.get(position).getPrice() + " تومان ");
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

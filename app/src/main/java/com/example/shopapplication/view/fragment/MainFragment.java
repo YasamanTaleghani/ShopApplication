@@ -1,15 +1,15 @@
-package com.example.shopapplication.fragment;
+package com.example.shopapplication.view.fragment;
 
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,22 +19,19 @@ import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.example.shopapplication.viewmodel.ProductionViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainFragment extends Fragment {
 
-
-    private List<ProductsItem> mNewestItems = new ArrayList<>();
-    private List<ProductsItem> mHighestRankedItems = new ArrayList<>();
     private RecyclerViewAdapter mNewestItemsAdapter;
     private RecyclerViewAdapter mHighestRankedAdapter;
     private RecyclerView mRecyclerViewNewestItems;
     private RecyclerView mRecyclerViewHighestRanked;
-    private ProductionRepository mRepository;
+
+    private ProductionViewModel mProductionViewModel;
 
     public MainFragment() {
         // Required empty public constructor
@@ -50,20 +47,26 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRepository = ProductionRepository.getInstance();
-        mRepository.fetchItemsAsyncNewestProducts(new ProductionRepository.CallBacksNewestItems() {
+
+        mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
+        mProductionViewModel.fetchHighestRankedItemsAsync();
+        mProductionViewModel.fetchNewestItemsAsync();
+        mProductionViewModel.getHighestRankedItemsLiveData().observe(this,
+                new Observer<List<ProductsItem>>() {
             @Override
-            public void onNewestItemsResponse(List<ProductsItem> items) {
+            public void onChanged(List<ProductsItem> items) {
+                setHighestRankedItemsAdapter(items);
+            }
+        });
+
+        mProductionViewModel.getNewestItemsLiveData().observe(this,
+                new Observer<List<ProductsItem>>() {
+            @Override
+            public void onChanged(List<ProductsItem> items) {
                 setNewestItemsAdapter(items);
             }
         });
 
-        mRepository.fetchItemsAsyncHighestRate(new ProductionRepository.CallBacksHighestRankedItems() {
-            @Override
-            public void onHighestRankedItemsResponse(List<ProductsItem> items) {
-                setHighestRankedItemsAdapter(items);
-            }
-        });
     }
 
     @Override
@@ -73,6 +76,7 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         findViews(view);
+
         return view;
     }
 

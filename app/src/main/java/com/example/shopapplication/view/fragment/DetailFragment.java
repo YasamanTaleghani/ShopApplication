@@ -1,8 +1,10 @@
-package com.example.shopapplication.fragment;
+package com.example.shopapplication.view.fragment;
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,7 @@ import com.example.shopapplication.R;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.model.ImagesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.squareup.picasso.Picasso;
+import com.example.shopapplication.viewmodel.ProductionViewModel;
 
 import java.util.List;
 
@@ -24,7 +26,8 @@ public class DetailFragment extends Fragment {
     public static final String ARG_PRODUCTION_ID = "production_id";
 
     private int mId;
-    private ProductionRepository mRepository;
+    private ProductionViewModel mProductionViewModel;
+
 
     private ImageView mImageView;
     private TextView mTextViewName;
@@ -52,12 +55,12 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null){
             mId = getArguments().getInt(ARG_PRODUCTION_ID,-100);
         }
-
-        mRepository = ProductionRepository.getInstance();
-        mRepository.fetchItem(mId, new ProductionRepository.CallBackItem() {
+        mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
+        mProductionViewModel.fetchItem(mId);
+        mProductionViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
             @Override
-            public void onItemResponse(ProductsItem item) {
-                initView(item);
+            public void onChanged(ProductsItem productsItem) {
+                initView(productsItem);
             }
         });
     }
@@ -89,7 +92,7 @@ public class DetailFragment extends Fragment {
                 .into(mImageView);
 
         mTextViewName.setText(item.getName());
-        mTextViewPrice.setText(item.getPrice() + " ریال ");
+        mTextViewPrice.setText(item.getPrice() + " تومان ");
         mTextViewRate.setText(item.getAverageRating());
         mTextViewdesc.setText(item.getDescription());
     }

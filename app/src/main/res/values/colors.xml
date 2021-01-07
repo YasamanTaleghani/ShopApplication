@@ -9,7 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="orangePrimaryLight">#FADDD3</color>
-    <color name="orangePrimary">#E16943</color>
+    <color name="orangePrimary">#E49177</color>
     <color name="orangePrimaryDark">#A82E07</color>
     <color name="colorTextPrimary">#2B2A2A</color>
+    <color name="colorBackgroundPrimary">#AAA2A2</color>
 </resources>

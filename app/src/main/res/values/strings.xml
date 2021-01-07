@@ -6,4 +6,12 @@
     <string name="mainPage">صفحه اصلی</string>
     <string name="highestRankedItems">بالاترین امتیاز</string>
     <string name="search">Search</string>
+    <string name="online_shop">فروشگاه آنلاین</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+    <string name="digital">کالای دیجیتال</string>
+    <string name="fashion">مد و پوشاک</string>
+    <string name="bookArt">کتاب، لوازم تحریر و هنر</string>
+    <string name="food">خوردنی و آشامیدنی</string>
 </resources>
