@@ -2,7 +2,6 @@ package com.example.shopapplication.repository;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.shopapplication.retrofit.NetworkParams;
@@ -13,8 +12,6 @@ import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,16 +21,17 @@ import retrofit2.Response;
 public class ProductionRepository {
 
     public static final String TAG = "ProductionRepository";
-    private List<ProductsItem> mNewestItems = new ArrayList<>();
     private ShopService mShopService;
     private static ProductionRepository mRepository = null;
     public static final int PAGE_HIGHEST_RANKED_ITEMS = 1;
     public static final int PAGE_NEWEST_ITEMS = 1;
+    public static final int PAGE_ITEMS = 1;
 
     private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData=new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mNewestItemsLiveData= new MutableLiveData<>();
     private MutableLiveData<ProductsItem> mItemLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CategoryResponse>> mCategoryItemsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mItemsLiveData= new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
 
     //Constructor
@@ -56,6 +54,10 @@ public class ProductionRepository {
 
     public MutableLiveData<List<CategoryResponse>> getCategoryItemsLiveData() {
         return mCategoryItemsLiveData;
+    }
+
+    public MutableLiveData<List<ProductsItem>> getItemsLiveData() {
+        return mItemsLiveData;
     }
 
     public MutableLiveData<List<ProductsItem>> getSearchItemsLiveData() {
@@ -109,10 +111,6 @@ public class ProductionRepository {
             (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
                 List<ProductsItem> productsItems = response.body();
 
-                for (int i = 0; i < productsItems.size() ; i++) {
-                    Log.d(TAG, "Get Response: " + response.body().get(i).getName());
-                }
-
                 //Update RecyclerView
                 mNewestItemsLiveData.setValue(productsItems);
             }
@@ -141,7 +139,7 @@ public class ProductionRepository {
 
             @Override
             public void onFailure(Call<ProductsItem> call, Throwable t) {
-
+                Log.e(TAG, t.getMessage(), t);
             }
         });
     }
@@ -152,18 +150,52 @@ public class ProductionRepository {
 
         call.enqueue(new Callback<List<CategoryResponse>>() {
             @Override
-            public void onResponse(Call<List<CategoryResponse>> call, Response<List<CategoryResponse>> response) {
+            public void onResponse(Call<List<CategoryResponse>> call,
+                                   Response<List<CategoryResponse>> response) {
                 List<CategoryResponse> categoryResponses = response.body();
+
+                for (int i = 0; i < categoryResponses.size() ; i++) {
+                    Log.d(TAG, "Get Response: " + response.body().get(i).getName());
+                }
 
                 mCategoryItemsLiveData.setValue(categoryResponses);
             }
 
             @Override
             public void onFailure(Call<List<CategoryResponse>> call, Throwable t) {
-
+                Log.e(TAG, t.getMessage(), t);
             }
         });
     }
 
+    public void fetchProductionItemsAsync(){
+        Call<List<ProductsItem>> call =
+                mShopService.listItems(NetworkParams.getBaseOptions(), PAGE_ITEMS);
+
+        call.enqueue(new Callback<List<ProductsItem>>() {
+            @Override
+            public void onResponse(Call<List<ProductsItem>> call,
+                                   Response<List<ProductsItem>> response) {
+                List<ProductsItem> items = response.body();
+
+                /*for (int i = 0; i < items.size() ; i++) {
+                    List<CategoriesItem> categories = response.body().get(i).getCategories();
+                    Log.d(TAG, "Get Response: " + response.body().get(i).getName());
+                    if(categories.size()>0){
+                        for (int j = 0; j < categories.size() ; j++) {
+                            Log.d(TAG, "Get Response: " + categories.get(j).getName());
+                        }
+                    }
+                }*/
+
+                mItemsLiveData.setValue(items);
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                Log.e(TAG, t.getMessage(), t);
+            }
+        });
+    }
 
 }

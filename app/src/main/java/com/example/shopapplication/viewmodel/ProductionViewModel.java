@@ -16,6 +16,7 @@ public class ProductionViewModel extends ViewModel {
     private final LiveData<List<ProductsItem>> mNewestItemsLiveData;
     private final LiveData<ProductsItem> mItemLiveData;
     private final LiveData<List<CategoryResponse>> mCategoryItemsLiveData;
+    private final LiveData<List<ProductsItem>> mItemsLiveData;
 
     //Constructor
     public ProductionViewModel() {
@@ -24,6 +25,7 @@ public class ProductionViewModel extends ViewModel {
         mNewestItemsLiveData = mRepository.getNewestItemsLiveData();
         mItemLiveData = mRepository.getItemLiveData();
         mCategoryItemsLiveData = mRepository.getCategoryItemsLiveData();
+        mItemsLiveData = mRepository.getItemsLiveData();
     }
 
     //Getter
@@ -37,6 +39,10 @@ public class ProductionViewModel extends ViewModel {
 
     public LiveData<ProductsItem> getItemLiveData() {
         return mItemLiveData;
+    }
+
+    public LiveData<List<ProductsItem>> getItemsLiveData() {
+        return mItemsLiveData;
     }
 
     public LiveData<List<CategoryResponse>> getCategoryItemsLiveData() {
@@ -58,5 +64,9 @@ public class ProductionViewModel extends ViewModel {
 
     public void fetchCategoriesAsync(){
         mRepository.fetchCategoriesAsync();
+    }
+
+    public void fetchItems(){
+        mRepository.fetchProductionItemsAsync();
     }
 }

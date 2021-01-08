@@ -23,8 +23,7 @@ public interface ShopService {
     Call<ProductsItem> item(@Path("id") int id,  @QueryMap Map<String, String> options);
 
     @GET(NetworkParams.PRODUCTION_CATEGORIES)
-    Call<List<CategoryResponse>> listCategories
-            (@QueryMap Map<String, String> options);
+    Call<List<CategoryResponse>> listCategories (@QueryMap Map<String, String> options);
 
     //TODO: search
     /*@GET(NetworkParams.PRODUCTION_CATEGORIES)

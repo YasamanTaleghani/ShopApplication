@@ -181,10 +181,10 @@ public class MainActivity extends AppCompatActivity {
         title.add(getResources().getString(R.string.sale));
         title.add(getResources().getString(R.string.home));
 
-        List<String> child1 = Arrays.asList("دیجیتال", "گوشی هوشمند", "ساعت و مچ بند هوشمند");
+        List<String> child1 = Arrays.asList("دیجیتال", "گوشی موبایل", "ساعت و مچ بند هوشمند");
         List<String> child2 = Arrays.asList
                 ("پوشاک زنانه", "پوشاک مردانه", "کفش", "کیف و کوله", "مد و پوشاک");
-        List<String> child3 = Arrays.asList("فیلم", "کتاب و مجله", "کتاب و هنر");
+        List<String> child3 = Arrays.asList("فیلم", "کتاب و مجلات", "کتاب و هنر");
         List<String> child4 = Arrays.asList("سوپرمارکت", "لبنیات", "مواد پروتئینی", "نوشیدنی ها");
         List<String> child5 = Arrays.asList( "بهداشت");
         List<String> child6 = Arrays.asList( "فروش ویژه");
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                getSupportActionBar().setTitle(mActivityTitle);
+                //getSupportActionBar().setTitle(mActivityTitle);
                 invalidateOptionsMenu();
             }
         };
