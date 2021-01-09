@@ -198,4 +198,7 @@ public class ProductionRepository {
         });
     }
 
+    public void fetchSearchItemsAsync(){
+
+    }
 }

@@ -17,6 +17,7 @@ public class ProductionViewModel extends ViewModel {
     private final LiveData<ProductsItem> mItemLiveData;
     private final LiveData<List<CategoryResponse>> mCategoryItemsLiveData;
     private final LiveData<List<ProductsItem>> mItemsLiveData;
+    private final LiveData<List<ProductsItem>> mSearchItemsLiveData;
 
     //Constructor
     public ProductionViewModel() {
@@ -26,6 +27,7 @@ public class ProductionViewModel extends ViewModel {
         mItemLiveData = mRepository.getItemLiveData();
         mCategoryItemsLiveData = mRepository.getCategoryItemsLiveData();
         mItemsLiveData = mRepository.getItemsLiveData();
+        mSearchItemsLiveData = mRepository.getSearchItemsLiveData();
     }
 
     //Getter
