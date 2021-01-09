@@ -14,10 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.shopapplication.R;
+import com.example.shopapplication.adapter.SliderAdapter;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.model.ImagesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
+import com.smarteist.autoimageslider.SliderView;
 
 import java.util.List;
 
@@ -29,12 +31,12 @@ public class DetailFragment extends Fragment {
     private ProductionViewModel mProductionViewModel;
 
 
-    private ImageView mImageView;
     private TextView mTextViewName;
     private TextView mTextViewPrice;
     private TextView mTextViewRate;
     private TextView mTextViewdesc;
     private List<ImagesItem> mImagesItems;
+    private SliderView mSliderView;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -77,19 +79,17 @@ public class DetailFragment extends Fragment {
     }
 
     private void findView(View view) {
-        mImageView = view.findViewById(R.id.image_view_detail);
         mTextViewName = view.findViewById(R.id.text_view_production_name);
         mTextViewPrice = view.findViewById(R.id.text_view_production_price);
         mTextViewRate = view.findViewById(R.id.text_view_production_rate);
         mTextViewdesc = view.findViewById(R.id.text_view_production_description);
+        mSliderView =  view.findViewById(R.id.image_view_slider);
     }
 
     private void initView(ProductsItem item) {
         mImagesItems = item.getImages();
-        Glide.with(this)
-                .load(mImagesItems.get(0).getSrc())
-                .placeholder(R.drawable.ic_loading)
-                .into(mImageView);
+        SliderAdapter sliderAdapter = new SliderAdapter(getContext(), mImagesItems);
+        mSliderView.setSliderAdapter(sliderAdapter);
 
         mTextViewName.setText(item.getName());
         mTextViewPrice.setText(item.getPrice() + " تومان ");
