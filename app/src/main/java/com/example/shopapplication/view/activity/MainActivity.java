@@ -4,7 +4,6 @@ package com.example.shopapplication.view.activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,23 +19,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.CustomExpandableListAdapter;
+import com.example.shopapplication.adapter.RecyclerViewAdapter;
 import com.example.shopapplication.helper.FragmentNavigaionManager;
 import com.example.shopapplication.helper.NavigationManager;
 import com.example.shopapplication.view.fragment.MainFragment;
-import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "categories";
     public static final String EXTRA_CATEGORY_NAME =
             "com.example.shopapplication.view.activity.categoryName";
+    public static final String EXTRA_SEARCH_QUERY =
+            "com.example.shopapplication.view.activity.search_query";
 
     private ProductionViewModel mViewModel;
+    private RecyclerViewAdapter mAdapter;
 
 
     private DrawerLayout mDrawerLayout;
@@ -110,9 +107,11 @@ public class MainActivity extends AppCompatActivity {
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
+            public boolean onQueryTextSubmit(String searchQuery) {
 
-                //mViewModel.
+                Intent intent = SearchActivity.newIntent(getApplicationContext());
+                intent.putExtra(EXTRA_SEARCH_QUERY, searchQuery);
+                startActivity(intent);
 
                 return true;
             }

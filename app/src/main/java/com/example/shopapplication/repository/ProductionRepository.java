@@ -198,7 +198,22 @@ public class ProductionRepository {
         });
     }
 
-    public void fetchSearchItemsAsync(){
+    public void fetchSearchItemsAsync(String query){
+        Call<List<ProductsItem>> call =
+                mShopService.listSearchItems(NetworkParams.getSearchOptions(query), 1);
 
+        call.enqueue(new Callback<List<ProductsItem>>() {
+            @Override
+            public void onResponse(Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
+                List<ProductsItem> searchItems = response.body();
+
+                mSearchItemsLiveData.setValue(searchItems);
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                Log.e(TAG, t.getMessage(), t);
+            }
+        });
     }
 }

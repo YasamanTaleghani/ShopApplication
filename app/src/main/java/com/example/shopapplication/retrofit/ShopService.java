@@ -25,8 +25,8 @@ public interface ShopService {
     @GET(NetworkParams.PRODUCTION_CATEGORIES)
     Call<List<CategoryResponse>> listCategories (@QueryMap Map<String, String> options);
 
-    //TODO: search
-    /*@GET(NetworkParams.PRODUCTION_CATEGORIES)
-    Call<List<CategoryResponse>> listCategories
-            (@QueryMap Map<String, String> options);*/
+    @GET(NetworkParams.PATH_PRODUCTS)
+    Call<List<ProductsItem>> listSearchItems
+            (@QueryMap Map<String, String> options,
+             @Query("page") int pageSearch);
 }

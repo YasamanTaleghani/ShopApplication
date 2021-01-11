@@ -51,6 +51,10 @@ public class ProductionViewModel extends ViewModel {
         return mCategoryItemsLiveData;
     }
 
+    public LiveData<List<ProductsItem>> getSearchItemsLiveData() {
+        return mSearchItemsLiveData;
+    }
+
     //Methods
     public void fetchHighestRankedItemsAsync(){
         mRepository.fetchItemsAsyncHighestRate();
@@ -70,5 +74,9 @@ public class ProductionViewModel extends ViewModel {
 
     public void fetchItems(){
         mRepository.fetchProductionItemsAsync();
+    }
+
+    public void fetchSearchItems(String query){
+        mRepository.fetchSearchItemsAsync(query);
     }
 }

@@ -48,6 +48,11 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        fetchItems();
+
+    }
+
+    private void fetchItems() {
         mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
         mProductionViewModel.fetchHighestRankedItemsAsync();
         mProductionViewModel.fetchNewestItemsAsync();
@@ -66,7 +71,6 @@ public class MainFragment extends Fragment {
                 setNewestItemsAdapter(items);
             }
         });
-
     }
 
     @Override
