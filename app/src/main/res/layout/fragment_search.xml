@@ -16,8 +16,36 @@
             android:id="@+id/search_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="search"></TextView>
+            tools:text="search" />
     </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right">
+
+        <Button
+            android:id="@+id/btn_filter"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:layout_marginRight="8dp"
+            android:text="فیلتر"/>
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:layout_marginRight="8dp"
+            android:text="جستوجوی پیشرفته"/>
+
+    </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"

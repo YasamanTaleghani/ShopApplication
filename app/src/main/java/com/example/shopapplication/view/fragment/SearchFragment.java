@@ -1,5 +1,7 @@
 package com.example.shopapplication.view.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shopapplication.R;
@@ -31,6 +34,8 @@ public class SearchFragment extends Fragment {
     private TextView mTextViewSearch;
     private HorizontalRecyclerAdapter mAdapter;
     private RecyclerView mRecyclerView;
+
+    private Button mButtonFilter, mButtonSearch;
 
     public SearchFragment() {
         // Required empty public constructor
@@ -60,6 +65,8 @@ public class SearchFragment extends Fragment {
                 setUpAdapter(items);
             }
         });
+
+        setListeners();
     }
 
     @Override
@@ -76,6 +83,8 @@ public class SearchFragment extends Fragment {
     private void findViews(View view) {
         mTextViewSearch = view.findViewById(R.id.search_text_view);
         mRecyclerView = view.findViewById(R.id.search_recycler_view);
+        mButtonFilter = view.findViewById(R.id.btn_filter);
+        mButtonSearch = view.findViewById(R.id.btn_search);
     }
 
     private void setUpAdapter(List<ProductsItem> items) {
@@ -88,5 +97,36 @@ public class SearchFragment extends Fragment {
                             getActivity(),
                             LinearLayoutManager.VERTICAL, false));
         }
+    }
+
+    private void setListeners() {
+        mButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        mButtonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setUpAlertDialog();
+            }
+        });
+    }
+
+    private void setUpAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("مرتب سازی براساس");
+
+        //add a radio button  list
+        String[] names = new String[]{"مرتبط ترین","گران ترین","ارزان ترین","جدیدترین"};
+        int checkedItem =0;
+        builder.setSingleChoiceItems(names, checkedItem, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
     }
 }
