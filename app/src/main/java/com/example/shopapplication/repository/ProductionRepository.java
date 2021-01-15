@@ -12,6 +12,9 @@ import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -23,9 +26,12 @@ public class ProductionRepository {
     public static final String TAG = "ProductionRepository";
     private ShopService mShopService;
     private static ProductionRepository mRepository = null;
-    public static final int PAGE_HIGHEST_RANKED_ITEMS = 1;
-    public static final int PAGE_NEWEST_ITEMS = 1;
+    private int pageHighestRankedOrder = 1;
+    private int pageNewestItems = 1;
     public static final int PAGE_ITEMS = 1;
+
+    private List<ProductsItem> mItemsRanked = new ArrayList<>();
+    private List<ProductsItem> mItemsNewest = new ArrayList<>();
 
     private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData=new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mNewestItemsLiveData= new MutableLiveData<>();
@@ -76,52 +82,86 @@ public class ProductionRepository {
     }
 
     public void fetchItemsAsyncHighestRate(){
-        Call<List<ProductsItem>> call =
-                mShopService.listItems(
-                        NetworkParams.getHighestRateOptions(), PAGE_HIGHEST_RANKED_ITEMS);
+        final boolean[] request = {true};
+        do{
+            Call<List<ProductsItem>> call =
+                    mShopService.listItems(
+                            NetworkParams.getHighestRateOptions(), pageHighestRankedOrder);
 
-        call.enqueue(new Callback<List<ProductsItem>>() {
+            call.enqueue(new Callback<List<ProductsItem>>() {
 
+                @Override
+                public void onResponse
+                        (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
+                    List<ProductsItem> productsItems = response.body();
+
+                    mItemsRanked.addAll(productsItems);
+
+                    if (productsItems.size()!=NetworkParams.PER_PAGE){
+                        request[0] = false;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+
+            });
+
+            pageHighestRankedOrder++;
+
+        } while(request[0]);
+
+        Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
             @Override
-            public void onResponse
-            (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
-                List<ProductsItem> productsItems = response.body();
-
-                //Update RecyclerView
-                mHighestRankedItemsLiveData.setValue(productsItems);
+            public int compare(ProductsItem p1, ProductsItem p2) {
+                return p1.getAverageRating().compareTo(p2.getAverageRating());
             }
-
-            @Override
-            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
-                Log.e(TAG, t.getMessage(), t);
-            }
-
         });
+        mHighestRankedItemsLiveData.setValue(mItemsRanked);
+
     }
 
     public void fetchItemsAsyncNewestProducts(){
-        Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getNewestOptions(),PAGE_NEWEST_ITEMS);
+        final boolean[] request = {true};
+        do{
+            Call<List<ProductsItem>> call =
+                    mShopService.listItems(NetworkParams.getNewestOptions(),pageNewestItems);
 
-        call.enqueue(new Callback<List<ProductsItem>>() {
+            call.enqueue(new Callback<List<ProductsItem>>() {
 
-            //this run on main thread
+                //this run on main thread
+                @Override
+                public void onResponse
+                (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
+                    List<ProductsItem> productsItems = response.body();
+
+                    mItemsNewest.addAll(productsItems);
+
+                    if (productsItems.size()!=NetworkParams.PER_PAGE){
+                        request[0] = false;
+                    }
+                }
+
+                //this run on main thread
+                @Override
+                public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                    Log.e(TAG, t.getMessage(), t);
+                }
+            });
+
+            pageNewestItems ++;
+        }while (request[0]);
+
+        Collections.sort(mItemsNewest, new Comparator<ProductsItem>() {
             @Override
-            public void onResponse
-            (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
-                List<ProductsItem> productsItems = response.body();
-
-                //Update RecyclerView
-                mNewestItemsLiveData.setValue(productsItems);
-            }
-
-            //this run on main thread
-            @Override
-            public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
-                Log.e(TAG, t.getMessage(), t);
+            public int compare(ProductsItem p1, ProductsItem p2) {
+                return p1.getDateCreated().compareTo(p2.getDateCreated());
             }
         });
 
+        mNewestItemsLiveData.setValue(mItemsNewest);
     }
 
     public void fetchItem(int id){
