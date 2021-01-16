@@ -12,6 +12,7 @@ import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -32,12 +33,13 @@ public class ProductionRepository {
 
     private List<ProductsItem> mItemsRanked = new ArrayList<>();
     private List<ProductsItem> mItemsNewest = new ArrayList<>();
+    private boolean request = true;
 
-    private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData=new MutableLiveData<>();
-    private MutableLiveData<List<ProductsItem>> mNewestItemsLiveData= new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mNewestItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<ProductsItem> mItemLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CategoryResponse>> mCategoryItemsLiveData = new MutableLiveData<>();
-    private MutableLiveData<List<ProductsItem>> mItemsLiveData= new MutableLiveData<>();
+    private MutableLiveData<List<ProductsItem>> mItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
 
     //Constructor
@@ -71,19 +73,18 @@ public class ProductionRepository {
     }
 
     //Methods
-    public static ProductionRepository getInstance(){
-        if (mRepository == null){
+    public static ProductionRepository getInstance() {
+        if (mRepository == null) {
             mRepository = new ProductionRepository();
             return mRepository;
-        }
-        else {
+        } else {
             return mRepository;
         }
     }
 
-    public void fetchItemsAsyncHighestRate(){
-        final boolean[] request = {true};
-        do{
+    public void fetchItemsAsyncHighestRateAndNewest() {
+
+
             Call<List<ProductsItem>> call =
                     mShopService.listItems(
                             NetworkParams.getHighestRateOptions(), pageHighestRankedOrder);
@@ -93,12 +94,37 @@ public class ProductionRepository {
                 @Override
                 public void onResponse
                         (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
-                    List<ProductsItem> productsItems = response.body();
 
-                    mItemsRanked.addAll(productsItems);
+                    if (response.isSuccessful()){
+                        List<ProductsItem> productsItems = response.body();
 
-                    if (productsItems.size()!=NetworkParams.PER_PAGE){
-                        request[0] = false;
+                        for (int i = 0; i <productsItems.size() ; i++) {
+                            Log.d(TAG, "product:" + (i+1) + productsItems.get(i).getName());
+                            mItemsRanked.add(productsItems.get(i));
+                            mItemsNewest.add(productsItems.get(i));
+                        }
+                        if (productsItems.size()==10){
+                            pageHighestRankedOrder++;
+                            fetchItemsAsyncHighestRateAndNewest();
+                        } else {
+                            Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
+                                @Override
+                                public int compare(ProductsItem p1, ProductsItem p2) {
+                                    return p1.getAverageRating().compareTo(p2.getAverageRating());
+                                }
+                            });
+                            Collections.reverse(mItemsRanked);
+                            mHighestRankedItemsLiveData.setValue(mItemsRanked);
+
+                            Collections.sort(mItemsNewest, new Comparator<ProductsItem>() {
+                                @Override
+                                public int compare(ProductsItem p1, ProductsItem p2) {
+                                    return p1.getDateCreated().compareTo(p2.getDateCreated());
+                                }
+                            });
+                            mNewestItemsLiveData.setValue(mItemsNewest);
+                        }
+
                     }
                 }
 
@@ -109,11 +135,8 @@ public class ProductionRepository {
 
             });
 
-            pageHighestRankedOrder++;
 
-        } while(request[0]);
-
-        Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
+        /*Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
             @Override
             public int compare(ProductsItem p1, ProductsItem p2) {
                 return p1.getAverageRating().compareTo(p2.getAverageRating());
@@ -121,50 +144,19 @@ public class ProductionRepository {
         });
         mHighestRankedItemsLiveData.setValue(mItemsRanked);
 
-    }
-
-    public void fetchItemsAsyncNewestProducts(){
-        final boolean[] request = {true};
-        do{
-            Call<List<ProductsItem>> call =
-                    mShopService.listItems(NetworkParams.getNewestOptions(),pageNewestItems);
-
-            call.enqueue(new Callback<List<ProductsItem>>() {
-
-                //this run on main thread
-                @Override
-                public void onResponse
-                (Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
-                    List<ProductsItem> productsItems = response.body();
-
-                    mItemsNewest.addAll(productsItems);
-
-                    if (productsItems.size()!=NetworkParams.PER_PAGE){
-                        request[0] = false;
-                    }
-                }
-
-                //this run on main thread
-                @Override
-                public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
-                    Log.e(TAG, t.getMessage(), t);
-                }
-            });
-
-            pageNewestItems ++;
-        }while (request[0]);
-
-        Collections.sort(mItemsNewest, new Comparator<ProductsItem>() {
+        Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
             @Override
             public int compare(ProductsItem p1, ProductsItem p2) {
                 return p1.getDateCreated().compareTo(p2.getDateCreated());
             }
         });
 
-        mNewestItemsLiveData.setValue(mItemsNewest);
+        mNewestItemsLiveData.setValue(mItemsNewest);*/
+
     }
 
-    public void fetchItem(int id){
+
+    public void fetchItem(int id) {
         Call<ProductsItem> call = mShopService.item(id, NetworkParams.getBaseOptions());
 
         call.enqueue(new Callback<ProductsItem>() {
@@ -184,7 +176,7 @@ public class ProductionRepository {
         });
     }
 
-    public void fetchCategoriesAsync(){
+    public void fetchCategoriesAsync() {
         Call<List<CategoryResponse>> call =
                 mShopService.listCategories(NetworkParams.getBaseOptions());
 
@@ -194,9 +186,9 @@ public class ProductionRepository {
                                    Response<List<CategoryResponse>> response) {
                 List<CategoryResponse> categoryResponses = response.body();
 
-                for (int i = 0; i < categoryResponses.size() ; i++) {
+                /*for (int i = 0; i < categoryResponses.size() ; i++) {
                     Log.d(TAG, "Get Response: " + response.body().get(i).getName());
-                }
+                }*/
 
                 mCategoryItemsLiveData.setValue(categoryResponses);
             }
@@ -208,9 +200,9 @@ public class ProductionRepository {
         });
     }
 
-    public void fetchProductionItemsAsync(){
+    public void fetchProductionItemsAsync() {
         Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getBaseOptions(), PAGE_ITEMS);
+                mShopService.listItems(NetworkParams.getBaseOptions(),1);
 
         call.enqueue(new Callback<List<ProductsItem>>() {
             @Override
@@ -238,7 +230,7 @@ public class ProductionRepository {
         });
     }
 
-    public void fetchSearchItemsAsync(String query){
+    public void fetchSearchItemsAsync(String query) {
         Call<List<ProductsItem>> call =
                 mShopService.listSearchItems(NetworkParams.getSearchOptions(query), 1);
 

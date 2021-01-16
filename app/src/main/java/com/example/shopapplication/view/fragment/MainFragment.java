@@ -2,11 +2,8 @@ package com.example.shopapplication.view.fragment;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,11 +14,11 @@ import android.view.ViewGroup;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
-import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainFragment extends Fragment {
@@ -54,8 +51,7 @@ public class MainFragment extends Fragment {
 
     private void fetchItems() {
         mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
-        mProductionViewModel.fetchHighestRankedItemsAsync();
-        mProductionViewModel.fetchNewestItemsAsync();
+        mProductionViewModel.fetchHighestRankedAndNewestItemsAsync();
         mProductionViewModel.getHighestRankedItemsLiveData().observe(this,
                 new Observer<List<ProductsItem>>() {
             @Override

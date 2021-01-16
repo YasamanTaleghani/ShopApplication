@@ -18,16 +18,19 @@ import android.widget.TextView;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
-import com.example.shopapplication.adapter.RecyclerViewAdapter;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
 public class SearchFragment extends Fragment {
 
     public static final String ARG_SEARCH_QUERY = "arg_search_query";
+
     private String mSearchQuery;
     private ProductionViewModel mViewModel;
 
@@ -36,6 +39,9 @@ public class SearchFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     private Button mButtonFilter, mButtonSearch;
+    private int checkedItem =0;
+    private List<ProductsItem> mProductsItemsUnchanged = new ArrayList<>();
+    private List<ProductsItem> mProductsItemschanged = new ArrayList<>();
 
     public SearchFragment() {
         // Required empty public constructor
@@ -62,11 +68,13 @@ public class SearchFragment extends Fragment {
         mViewModel.getSearchItemsLiveData().observe(this, new Observer<List<ProductsItem>>() {
             @Override
             public void onChanged(List<ProductsItem> items) {
+                mProductsItemsUnchanged.addAll(items);
+                mProductsItemschanged.addAll(items);
                 setUpAdapter(items);
             }
         });
 
-        setListeners();
+
     }
 
     @Override
@@ -76,6 +84,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         findViews(view);
+        setListeners();
 
         return view;
     }
@@ -121,12 +130,56 @@ public class SearchFragment extends Fragment {
 
         //add a radio button  list
         String[] names = new String[]{"مرتبط ترین","گران ترین","ارزان ترین","جدیدترین"};
-        int checkedItem =0;
+
         builder.setSingleChoiceItems(names, checkedItem, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                switch (i){
+                    case 0:
+                        checkedItem =0;
+                        setUpAdapter(mProductsItemsUnchanged);
+                        dialogInterface.dismiss();
+                        break;
+                    case 1:
+                        checkedItem =1;
+                        Collections.sort(mProductsItemschanged, new Comparator<ProductsItem>() {
+                            @Override
+                            public int compare(ProductsItem p1, ProductsItem p2) {
+                                return Integer.parseInt(p2.getPrice())-Integer.parseInt(p1.getPrice());
+                            }
+                        });
+                        setUpAdapter(mProductsItemschanged);
+                        dialogInterface.dismiss();
+                        break;
+                    case 2:
+                        checkedItem =2;
+                        Collections.sort(mProductsItemschanged, new Comparator<ProductsItem>() {
+                            @Override
+                            public int compare(ProductsItem p1, ProductsItem p2) {
+                                return Integer.parseInt(p1.getPrice())-Integer.parseInt(p2.getPrice());
+                            }
+                        });
+                        setUpAdapter(mProductsItemschanged);
+                        dialogInterface.dismiss();
+                        break;
+                    case 3:
+                        checkedItem =3;
+                        Collections.sort(mProductsItemschanged, new Comparator<ProductsItem>() {
+                            @Override
+                            public int compare(ProductsItem p1, ProductsItem p2) {
+                                return (p1.getDateCreated()).compareTo(p2.getDateCreated());
+                            }
+                        });
+                        setUpAdapter(mProductsItemschanged);
+                        dialogInterface.dismiss();
+                        break;
+                }
             }
         });
+
+        AlertDialog alert = builder.create();
+        alert.setCanceledOnTouchOutside(true);
+        alert.show();
+
     }
 }

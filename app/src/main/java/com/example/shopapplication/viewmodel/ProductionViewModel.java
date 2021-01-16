@@ -56,12 +56,8 @@ public class ProductionViewModel extends ViewModel {
     }
 
     //Methods
-    public void fetchHighestRankedItemsAsync(){
-        mRepository.fetchItemsAsyncHighestRate();
-    }
-
-    public void fetchNewestItemsAsync(){
-        mRepository.fetchItemsAsyncNewestProducts();
+    public void fetchHighestRankedAndNewestItemsAsync(){
+        mRepository.fetchItemsAsyncHighestRateAndNewest();
     }
 
     public void fetchItem(int id){
