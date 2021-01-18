@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -133,10 +134,10 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerToggle.onOptionsItemSelected(item))
             return true;
 
-        if (id==R.id.menu_item_search){
-            Log.d(TAG, "Search msg");
+        if (id==R.id.menu_item_buy){
+            Intent intent = ShopListActivity.newIntent(this);
+            startActivity(intent);
         }
-
 
         return super.onOptionsItemSelected(item);
     }

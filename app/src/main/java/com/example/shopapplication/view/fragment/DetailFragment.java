@@ -9,8 +9,10 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.shopapplication.R;
@@ -37,6 +39,7 @@ public class DetailFragment extends Fragment {
     private TextView mTextViewdesc;
     private List<ImagesItem> mImagesItems;
     private SliderView mSliderView;
+    private Button mButtonBuy;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -74,6 +77,7 @@ public class DetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
 
         findView(view);
+        setListeners();
 
         return view;
     }
@@ -84,6 +88,7 @@ public class DetailFragment extends Fragment {
         mTextViewRate = view.findViewById(R.id.text_view_production_rate);
         mTextViewdesc = view.findViewById(R.id.text_view_production_description);
         mSliderView =  view.findViewById(R.id.image_view_slider);
+        mButtonBuy = view.findViewById(R.id.btn_add_to_buy_list);
     }
 
     private void initView(ProductsItem item) {
@@ -95,5 +100,14 @@ public class DetailFragment extends Fragment {
         mTextViewPrice.setText(item.getPrice() + " تومان ");
         mTextViewRate.setText(item.getAverageRating());
         mTextViewdesc.setText(item.getDescription());
+    }
+
+    private void setListeners(){
+        mButtonBuy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "buy", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

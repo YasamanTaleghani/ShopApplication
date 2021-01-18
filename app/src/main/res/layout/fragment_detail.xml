@@ -1,137 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".view.fragment.DetailFragment"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="24dp">
+            android:orientation="vertical"
+            tools:context=".view.fragment.DetailFragment">
 
-            <com.smarteist.autoimageslider.SliderView
-                android:id="@+id/image_view_slider"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_star"
+                    android:layout_gravity="center">
+                </ImageView>
+
+                <TextView
+                    android:id="@+id/text_view_production_rate"
+                    android:layout_width="48dp"
+                    android:layout_height="36dp"
+                    tools:text="4.5"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/text_view_production_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="right"
+                    android:text="نام محصول"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="12dp" />
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_width="300dp"
                 android:layout_gravity="center"
-                android:layout_margin="32dp"
-                android:src="@drawable/ic_loading"
-                app:sliderAnimationDuration="600"
-                app:sliderAutoCycleDirection="back_and_forth"
-                app:sliderAutoCycleEnabled="true"
-                app:sliderIndicatorAnimationDuration="600"
-                app:sliderIndicatorGravity="center_horizontal|bottom"
-                app:sliderIndicatorMargin="15dp"
-                app:sliderIndicatorOrientation="horizontal"
-                app:sliderIndicatorPadding="3dp"
-                app:sliderIndicatorRadius="2dp"
-                app:sliderIndicatorSelectedColor="#5A5A5A"
-                app:sliderIndicatorUnselectedColor="#FFF"
-                app:sliderScrollTimeInSec="1"
-                app:sliderStartAutoCycle="true"/>
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp">
 
-            <!--<ImageView
-                android:layout_width="300dp"
-                android:layout_height="300dp"
-                android:layout_gravity="center"
-                >
-            </ImageView>-->
-        </com.google.android.material.card.MaterialCardView>
+                <com.smarteist.autoimageslider.SliderView
+                    android:id="@+id/image_view_slider"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="32dp"
+                    android:src="@drawable/ic_loading"
+                    app:sliderAnimationDuration="600"
+                    app:sliderAutoCycleDirection="back_and_forth"
+                    app:sliderAutoCycleEnabled="true"
+                    app:sliderIndicatorAnimationDuration="600"
+                    app:sliderIndicatorGravity="center_horizontal|bottom"
+                    app:sliderIndicatorMargin="15dp"
+                    app:sliderIndicatorOrientation="horizontal"
+                    app:sliderIndicatorPadding="3dp"
+                    app:sliderIndicatorRadius="2dp"
+                    app:sliderIndicatorSelectedColor="#5A5A5A"
+                    app:sliderIndicatorUnselectedColor="#FFF"
+                    app:sliderScrollTimeInSec="1"
+                    app:sliderStartAutoCycle="true" />
 
+            </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="نام محصول: "
-            android:textColor="@color/orangePrimaryDark"
-            android:layout_marginEnd="8dp"/>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/text_view_production_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="right"
-            android:text="Name of Production"
-            android:textSize="20dp" />
+                <TextView
+                    android:id="@+id/text_view_production_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="left"
+                    android:layout_gravity="center_vertical"
+                    android:text="Price of Production"
+                    android:textSize="18dp" />
+            </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="توضیحات محصول: "
-            android:layout_marginTop="8dp"
-            android:textColor="@color/orangePrimaryDark"
-            android:layout_marginEnd="8dp"/>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_marginTop="8dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="18dp"
+                android:layout_marginRight="18dp">
 
-        <TextView
-            android:id="@+id/text_view_production_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="right"
-            android:text="Desc of Production"
-            android:textSize="20dp" />
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="قیمت محصول: "
-            android:textColor="@color/orangePrimaryDark"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"/>
+                    <TextView
+                        android:id="@+id/text_view_production_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="Desc of Production"
+                        android:textSize="16dp" />
 
-        <TextView
-            android:id="@+id/text_view_production_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="right"
-            android:text="Price of Production"
-            android:textSize="18dp">
-        </TextView>
+                </ScrollView>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="امتیاز محصول:"
-            android:textColor="@color/orangePrimaryDark"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="8dp"/>
+            </com.google.android.material.card.MaterialCardView>
 
-        <TextView
-            android:id="@+id/text_view_production_rate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="right"
-            android:text="Rate of Production"
-            android:textSize="18dp">
-        </TextView>
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="کلیه حقوق مادی و معنوی این نرم افزار محفوظ می باشد"
+                android:gravity="center"
+                android:textColor="@color/colorBackgroundPrimary"
+                android:layout_gravity="center"/>
 
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_add_to_buy_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="افزودن به سبد خرید"
+        android:visibility="visible"
+        android:layout_margin="8dp"
+        android:layout_marginTop="16dp"
+        android:textSize="18dp"
+        android:layout_gravity="bottom"/>
+
+</FrameLayout>
