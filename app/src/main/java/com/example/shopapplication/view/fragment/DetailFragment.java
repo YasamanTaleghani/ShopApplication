@@ -20,6 +20,7 @@ import com.example.shopapplication.adapter.SliderAdapter;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.model.ImagesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.utilities.ShoppingListPreferences;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.smarteist.autoimageslider.SliderView;
 
@@ -106,7 +107,8 @@ public class DetailFragment extends Fragment {
         mButtonBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "buy", Toast.LENGTH_SHORT).show();
+                Integer integer = mId;
+                ShoppingListPreferences.addFavoriteItem(getActivity(), integer.toString());
             }
         });
     }

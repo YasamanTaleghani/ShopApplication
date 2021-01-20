@@ -135,24 +135,6 @@ public class ProductionRepository {
 
             });
 
-
-        /*Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
-            @Override
-            public int compare(ProductsItem p1, ProductsItem p2) {
-                return p1.getAverageRating().compareTo(p2.getAverageRating());
-            }
-        });
-        mHighestRankedItemsLiveData.setValue(mItemsRanked);
-
-        Collections.sort(mItemsRanked, new Comparator<ProductsItem>() {
-            @Override
-            public int compare(ProductsItem p1, ProductsItem p2) {
-                return p1.getDateCreated().compareTo(p2.getDateCreated());
-            }
-        });
-
-        mNewestItemsLiveData.setValue(mItemsNewest);*/
-
     }
 
 

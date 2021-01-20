@@ -1,25 +1,45 @@
 package com.example.shopapplication.utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
 public class ShoppingListPreferences {
     private static final String PREF_SHOP_LIST = "shopList";
 
-    public static String getPrefShopList(Context context){
-
-        return getSharedPreferences(context).getString(PREF_SHOP_LIST, null);
+    public static boolean addFavoriteItem(Activity activity, String favoriteItem){
+        //Get previous favorite items
+        String favoriteList = getStringFromPreferences(activity,null,PREF_SHOP_LIST);
+        // Append new Favorite item
+        if(favoriteList!=null){
+            favoriteList = favoriteList+","+favoriteItem;
+        }else{
+            favoriteList = favoriteItem;
+        }
+        // Save in Shared Preferences
+        return putStringInPreferences(activity,favoriteList);
     }
 
-    public static void setPrefShopList(Context context, String item){
-
-        getSharedPreferences(context)
-                .edit()
-                .putString(PREF_SHOP_LIST, item)
-                .apply();
+    public static String[] getFavoriteList(Activity activity){
+        String favoriteList = getStringFromPreferences(activity,null,PREF_SHOP_LIST);
+        return convertStringToArray(favoriteList);
+    }
+    private static boolean putStringInPreferences(Activity activity,String nick){
+        SharedPreferences sharedPreferences = activity.getPreferences(Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PREF_SHOP_LIST, nick);
+        editor.commit();
+        return true;
+    }
+    private static String getStringFromPreferences(Activity activity,String defaultValue,String key){
+        SharedPreferences sharedPreferences = activity.getPreferences(Activity.MODE_PRIVATE);
+        String temp = sharedPreferences.getString(key, defaultValue);
+        return temp;
     }
 
-    private static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
+    private static String[] convertStringToArray(String str){
+        String[] arr = str.split(",");
+        return arr;
     }
+
 }
