@@ -139,6 +139,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        if (id==R.id.menu_item_setting){
+            //TODO
+            //Open a setting dialog
+        }
+
+        if (id==R.id.menu_item_profile){
+            mViewModel.postCustomer("yas", "tlg" , "ystlfdds@yahoo.com");
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

@@ -14,4 +14,16 @@
         android:title="menu_item_buy"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_item_profile"
+        android:icon="@drawable/ic_account"
+        android:title="پروفایل"
+        app:showAsAction="never|ifRoom" />
+
+    <item
+        android:id="@+id/menu_item_setting"
+        android:icon="@drawable/ic_setting"
+        android:title="تنظیمات"
+        app:showAsAction="never" />
+
 </menu>

@@ -8,6 +8,7 @@ import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 
@@ -226,6 +227,30 @@ public class ProductionRepository {
 
             @Override
             public void onFailure(Call<List<ProductsItem>> call, Throwable t) {
+                Log.e(TAG, t.getMessage(), t);
+            }
+        });
+    }
+
+    public void postCustomer(String firstName, String lastName, String mail){
+
+        Call<CustomerResponse> call = mShopService.customerResponse(
+                NetworkParams.getBaseOptions(),
+                firstName,
+                lastName,
+                mail);
+
+        call.enqueue(new Callback<CustomerResponse>() {
+            @Override
+            public void onResponse(Call<CustomerResponse> call, Response<CustomerResponse> response) {
+                CustomerResponse customer = response.body();
+                if (response.isSuccessful()){
+                    Log.d(TAG, "customer id: " + customer.getId() );
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CustomerResponse> call, Throwable t) {
                 Log.e(TAG, t.getMessage(), t);
             }
         });

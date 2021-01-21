@@ -75,4 +75,8 @@ public class ProductionViewModel extends ViewModel {
     public void fetchSearchItems(String query){
         mRepository.fetchSearchItemsAsync(query);
     }
+
+    public void postCustomer(String firstName, String lastName, String mail){
+        mRepository.postCustomer(firstName,lastName,mail);
+    }
 }

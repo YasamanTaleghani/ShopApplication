@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <Switch
+        android:id="@+id/switch2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        tools:ignore="UseSwitchCompatOrMaterialXml"
+        android:textSize="26dp"/>
+
+    <RadioButton
+        android:id="@+id/radioButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان 3 ساعته"
+        app:layout_constraintTop_toBottomOf="@id/switch2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="32dp"/>
+
+    <RadioButton
+        android:id="@+id/radioButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان 4 ساعته"
+        app:layout_constraintTop_toBottomOf="@id/radioButton3"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="32dp"/>
+
+    <RadioButton
+        android:id="@+id/radioButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان 5 ساعته"
+        app:layout_constraintTop_toBottomOf="@id/radioButton4"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="32dp"/>
+
+    <RadioButton
+        android:id="@+id/radioButton6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان 8 ساعته"
+        app:layout_constraintTop_toBottomOf="@id/radioButton5"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="32dp"/>
+
+    <RadioButton
+        android:id="@+id/radioButton7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="اعلان 12 ساعته"
+        app:layout_constraintTop_toBottomOf="@id/radioButton6"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="32dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
