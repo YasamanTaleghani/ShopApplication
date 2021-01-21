@@ -1,8 +1,12 @@
 package com.example.shopapplication.retrofit.customer;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 import com.google.gson.annotations.SerializedName;
 
+@Entity
 public class CustomerResponse {
 
 	@SerializedName("date_modified_gmt")
@@ -38,6 +42,7 @@ public class CustomerResponse {
 	@SerializedName("meta_data")
 	private List<Object> metaData;
 
+	@PrimaryKey
 	@SerializedName("id")
 	private int id;
 
@@ -145,5 +150,8 @@ public class CustomerResponse {
 		this.firstName = firstName;
 		this.email = email;
 		this.username = username;
+	}
+
+	public CustomerResponse() {
 	}
 }

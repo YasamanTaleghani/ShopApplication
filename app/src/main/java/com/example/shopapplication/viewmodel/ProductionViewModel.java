@@ -1,5 +1,9 @@
 package com.example.shopapplication.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -9,7 +13,7 @@ import com.example.shopapplication.retrofit.model.ProductsItem;
 
 import java.util.List;
 
-public class ProductionViewModel extends ViewModel {
+public class ProductionViewModel extends AndroidViewModel {
 
     private final ProductionRepository mRepository;
     private final LiveData<List<ProductsItem>> mHighestRankedItemsLiveData;
@@ -20,8 +24,9 @@ public class ProductionViewModel extends ViewModel {
     private final LiveData<List<ProductsItem>> mSearchItemsLiveData;
 
     //Constructor
-    public ProductionViewModel() {
-        mRepository = ProductionRepository.getInstance();
+    public ProductionViewModel(@NonNull Application application) {
+        super(application);
+        mRepository = ProductionRepository.getInstance(getApplication());
         mHighestRankedItemsLiveData = mRepository.getHighestRankedItemsLiveData();
         mNewestItemsLiveData = mRepository.getNewestItemsLiveData();
         mItemLiveData = mRepository.getItemLiveData();

@@ -1,9 +1,14 @@
 package com.example.shopapplication.repository;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
+import com.example.shopapplication.database.AppDatabase;
+import com.example.shopapplication.database.CustomerDAO;
+import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
@@ -23,7 +28,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductionRepository {
+public class ProductionRepository implements CustomerDAO {
+
+    private CustomerDAO mCustomerDAO;
 
     public static final String TAG = "ProductionRepository";
     private ShopService mShopService;
@@ -44,8 +51,12 @@ public class ProductionRepository {
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
 
     //Constructor
-    private ProductionRepository() {
+    private ProductionRepository(Context context) {
         mShopService = RetrofitInstance.getInstance().create(ShopService.class);
+
+        AppDatabase db = Room.databaseBuilder(context.getApplicationContext(),
+                AppDatabase.class, "database.db").build();
+        mCustomerDAO = db.getCustomerDAO();
     }
 
     //Getter
@@ -74,9 +85,9 @@ public class ProductionRepository {
     }
 
     //Methods
-    public static ProductionRepository getInstance() {
+    public static ProductionRepository getInstance(Context context) {
         if (mRepository == null) {
-            mRepository = new ProductionRepository();
+            mRepository = new ProductionRepository(context);
             return mRepository;
         } else {
             return mRepository;
@@ -254,5 +265,26 @@ public class ProductionRepository {
                 Log.e(TAG, t.getMessage(), t);
             }
         });
+    }
+
+    //Data base
+    @Override
+    public CustomerModel returnCustomer(int customerId) {
+        return mCustomerDAO.returnCustomer(customerId);
+    }
+
+    @Override
+    public void insertCustomer(CustomerModel customer) {
+        mCustomerDAO.insertCustomer(customer);
+    }
+
+    @Override
+    public void updateCustomer(CustomerModel customer) {
+        mCustomerDAO.updateCustomer(customer);
+    }
+
+    @Override
+    public void deleteCustomer(CustomerModel customer) {
+        mCustomerDAO.deleteCustomer(customer);
     }
 }
