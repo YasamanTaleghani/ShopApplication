@@ -11,14 +11,14 @@ import android.view.ViewGroup;
 import com.example.shopapplication.R;
 
 
-public class ProfileFragment extends Fragment {
+public class SignUpCustomerFragment extends Fragment {
 
-    public ProfileFragment() {
+    public SignUpCustomerFragment() {
         // Required empty public constructor
     }
 
-    public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
+    public static SignUpCustomerFragment newInstance() {
+        SignUpCustomerFragment fragment = new SignUpCustomerFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -33,6 +33,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return inflater.inflate(R.layout.fragment_signup_customer, container, false);
     }
 }

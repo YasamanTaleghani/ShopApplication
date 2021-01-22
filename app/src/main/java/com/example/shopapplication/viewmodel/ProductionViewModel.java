@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
 import com.example.shopapplication.retrofit.model.ProductsItem;
@@ -83,5 +84,17 @@ public class ProductionViewModel extends AndroidViewModel {
 
     public void postCustomer(String firstName, String lastName, String mail){
         mRepository.postCustomer(firstName,lastName,mail);
+    }
+
+    public List<CustomerModel> returnAllCustomers(){
+       return mRepository.returnAllCustomers();
+    }
+
+    public void insertCustomer(CustomerModel customer){
+        mRepository.insertCustomer(customer);
+    }
+
+    public CustomerModel getCustomer(int id){
+        return mRepository.returnCustomer(id);
     }
 }

@@ -49,7 +49,7 @@ public class CustomerModel {
 
     public CustomerModel() {
     }
-    
+
     //Getter & Setter
 
     public int getId() {

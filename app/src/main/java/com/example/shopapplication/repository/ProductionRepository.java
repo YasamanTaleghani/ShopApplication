@@ -257,6 +257,19 @@ public class ProductionRepository implements CustomerDAO {
                 CustomerResponse customer = response.body();
                 if (response.isSuccessful()){
                     Log.d(TAG, "customer id: " + customer.getId() );
+                    CustomerModel customerModel = new CustomerModel(
+                            customer.getId(),
+                            customer.getFirstName(),
+                            customer.getLastName(),
+                            customer.getBilling().getPhone(),
+                            customer.getEmail(),
+                            customer.getBilling().getCity(),
+                            customer.getBilling().getState(),
+                            customer.getBilling().getCountry(),
+                            customer.getBilling().getAddress1(),
+                            customer.getBilling().getAddress2());
+
+                    insertCustomer(customerModel);
                 }
             }
 
@@ -268,6 +281,11 @@ public class ProductionRepository implements CustomerDAO {
     }
 
     //Data base
+    @Override
+    public List<CustomerModel> returnAllCustomers() {
+        return mCustomerDAO.returnAllCustomers();
+    }
+
     @Override
     public CustomerModel returnCustomer(int customerId) {
         return mCustomerDAO.returnCustomer(customerId);

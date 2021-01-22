@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id==R.id.menu_item_profile){
-            mViewModel.postCustomer("yas", "tlg" , "ystlfdds@yahoo.com");
+            Intent intent = LoginCustomerActivity.newIntent(getApplicationContext());
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
