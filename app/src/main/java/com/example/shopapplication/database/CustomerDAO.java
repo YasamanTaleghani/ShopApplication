@@ -14,7 +14,7 @@ public interface CustomerDAO {
     @Query("SELECT * FROM customer")
     List<CustomerModel> returnAllCustomers();
 
-    @Query("SELECT * FROM customer WHERE id IN (:customerId)")
+    @Query("SELECT * FROM customer WHERE customerId IN (:customerId)")
     CustomerModel returnCustomer(int customerId);
 
     @Insert

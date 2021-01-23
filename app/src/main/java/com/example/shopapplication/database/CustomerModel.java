@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class CustomerModel {
 
     @PrimaryKey
-    public int id;
+    public int customerId;
 
     @ColumnInfo(name = "first_name")
     public String firstName;
@@ -33,9 +33,9 @@ public class CustomerModel {
     public String address2;
     
     //constructor
-    public CustomerModel(int id, String firstName, String lastName, String phone, String mail, 
+    public CustomerModel(int customerId, String firstName, String lastName, String phone, String mail,
                          String city, String state, String country, String address1, String address2) {
-        this.id = id;
+        this.customerId = customerId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
@@ -52,12 +52,12 @@ public class CustomerModel {
 
     //Getter & Setter
 
-    public int getId() {
-        return id;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public String getFirstName() {

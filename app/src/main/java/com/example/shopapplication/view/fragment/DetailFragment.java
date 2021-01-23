@@ -10,17 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.SliderAdapter;
-import com.example.shopapplication.repository.ProductionRepository;
+import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.retrofit.model.ImagesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.example.shopapplication.utilities.ShoppingListPreferences;
+import com.example.shopapplication.utilities.CustomerPreferences;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.smarteist.autoimageslider.SliderView;
 
@@ -31,7 +28,7 @@ public class DetailFragment extends Fragment {
     public static final String ARG_PRODUCTION_ID = "production_id";
 
     private int mId;
-    private ProductionViewModel mProductionViewModel;
+    private ProductionViewModel mViewModel;
 
 
     private TextView mTextViewName;
@@ -61,9 +58,9 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null){
             mId = getArguments().getInt(ARG_PRODUCTION_ID,-100);
         }
-        mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
-        mProductionViewModel.fetchItem(mId);
-        mProductionViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
+        mViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
+        mViewModel.fetchItem(mId);
+        mViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
             @Override
             public void onChanged(ProductsItem productsItem) {
                 initView(productsItem);
@@ -107,8 +104,23 @@ public class DetailFragment extends Fragment {
         mButtonBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Integer integer = mId;
-                ShoppingListPreferences.addFavoriteItem(getActivity(), integer.toString());
+                int customerId = CustomerPreferences.getCustomerIfPreferences
+                        (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
+
+                mViewModel.fetchItem(mId);
+                mViewModel.getItemLiveData().observe(getViewLifecycleOwner(), new Observer<ProductsItem>() {
+                    @Override
+                    public void onChanged(ProductsItem productsItem) {
+                        ProductionModel production = new ProductionModel(
+                                customerId,
+                                mId,
+                                productsItem.getName(),
+                                productsItem.getPrice());
+                        mViewModel.insertProductionOrder(production);
+                    }
+                });
+
+
             }
         });
     }

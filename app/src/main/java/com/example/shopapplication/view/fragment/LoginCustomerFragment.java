@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.database.CustomerModel;
+import com.example.shopapplication.retrofit.customer.CustomerResponse;
+import com.example.shopapplication.utilities.CustomerPreferences;
 import com.example.shopapplication.view.activity.SignUpCustomerActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
@@ -60,23 +63,55 @@ public class LoginCustomerFragment extends Fragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isCustomerValid = false;
-                List<CustomerModel> customers = mViewModel.returnAllCustomers();
-                String phone = mEditText.toString();
-                for (int i = 0; i < customers.size() ; i++) {
-                    if (customers.get(i).phone.equals(phone)){
-                        //TODO
 
-                        isCustomerValid = true;
+                mViewModel.fetchCustomers();
+                mViewModel.getCustomersLiveData().observe(getViewLifecycleOwner(), new Observer<List<CustomerResponse>>() {
+                    @Override
+                    public void onChanged(List<CustomerResponse> customerResponses) {
+                        checkCustomer(customerResponses);
                     }
-                }
+                });
 
-                if (!isCustomerValid){
-                    Intent intent = SignUpCustomerActivity.newIntent(getContext());
-                    startActivity(intent);
-                }
             }
         });
+    }
+
+    private void checkCustomer(List<CustomerResponse> customerResponses) {
+        boolean isCustomerValid = false;
+        String phone = mEditText.toString();
+        CustomerResponse customer = new CustomerResponse();
+
+        for (int i = 0; i < customerResponses.size(); i++) {
+            if (customerResponses.get(i).getBilling().getPhone().equals(phone)){
+                customer = customerResponses.get(i);
+                isCustomerValid = true;
+                break;
+            }
+        }
+
+        if (isCustomerValid){
+            CustomerModel customerModel = mViewModel.getCustomer(customer.getId());
+            if (customerModel==null){
+                CustomerModel newCustomer = new CustomerModel(
+                                customer.getId(),
+                                customer.getFirstName(),
+                                customer.getLastName(),
+                                customer.getBilling().getPhone(),
+                                customer.getEmail(),
+                                customer.getBilling().getCity(),
+                                customer.getBilling().getState(),
+                                customer.getBilling().getCountry(),
+                                customer.getBilling().getAddress1(),
+                                customer.getBilling().getAddress2());
+
+                mViewModel.insertCustomer(newCustomer);
+                CustomerPreferences.putCustomerInPreferences(getActivity(), newCustomer.customerId);
+            }
+
+        } else {
+            Intent intent = SignUpCustomerActivity.newIntent(getContext());
+            startActivity(intent);
+        }
     }
 
     private void findViews(View view) {

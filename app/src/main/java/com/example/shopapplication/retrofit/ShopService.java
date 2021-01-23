@@ -2,8 +2,11 @@ package com.example.shopapplication.retrofit;
 
 
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.orders.OrdersResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -41,6 +44,21 @@ public interface ShopService {
             @QueryMap Map<String, String> options,
             @Field("first_name") String firstName,
             @Field("last_name") String lastName,
-            @Field("email") String email);
+            @Field("email") String email,
+            @Field("billing")Billing billing);
 
+    @GET(NetworkParams.POST_CUSTOMERS)
+    Call<List<CustomerResponse>> listCustomers
+            (@QueryMap Map<String, String> options,
+             @Query("page") int pageCustomers);
+
+    @FormUrlEncoded
+    @POST(NetworkParams.POST_ORDERS)
+    Call<OrdersResponse> orderResponse(
+            @QueryMap Map<String, String> options,
+            @Field("total") String total,
+            @Field("customer_id") int customerId,
+            @Field("discountTotal") String discountTotal,
+            @Field("billing") Billing billing,
+            @Field("line_items")List<LineItemsItem> items);
 }

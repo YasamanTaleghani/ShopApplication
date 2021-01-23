@@ -8,9 +8,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.shopapplication.database.CustomerModel;
+import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.retrofit.customer.Billing;
+import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.orders.LineItemsItem;
 
 import java.util.List;
 
@@ -23,6 +27,7 @@ public class ProductionViewModel extends AndroidViewModel {
     private final LiveData<List<CategoryResponse>> mCategoryItemsLiveData;
     private final LiveData<List<ProductsItem>> mItemsLiveData;
     private final LiveData<List<ProductsItem>> mSearchItemsLiveData;
+    private final LiveData<List<CustomerResponse>> mCustomersLiveData;
 
     //Constructor
     public ProductionViewModel(@NonNull Application application) {
@@ -34,6 +39,7 @@ public class ProductionViewModel extends AndroidViewModel {
         mCategoryItemsLiveData = mRepository.getCategoryItemsLiveData();
         mItemsLiveData = mRepository.getItemsLiveData();
         mSearchItemsLiveData = mRepository.getSearchItemsLiveData();
+        mCustomersLiveData = mRepository.getCustomersLiveData();
     }
 
     //Getter
@@ -61,6 +67,10 @@ public class ProductionViewModel extends AndroidViewModel {
         return mSearchItemsLiveData;
     }
 
+    public LiveData<List<CustomerResponse>> getCustomersLiveData(){
+        return mCustomersLiveData;
+    }
+
     //Methods
     public void fetchHighestRankedAndNewestItemsAsync(){
         mRepository.fetchItemsAsyncHighestRateAndNewest();
@@ -82,10 +92,15 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.fetchSearchItemsAsync(query);
     }
 
-    public void postCustomer(String firstName, String lastName, String mail){
-        mRepository.postCustomer(firstName,lastName,mail);
+    public void fetchCustomers(){
+        mRepository.fetchCustomers();
     }
 
+    public void postCustomer(String firstName, String lastName, String mail, Billing billing){
+        mRepository.postCustomer(firstName,lastName,mail, billing);
+    }
+
+    //Customer
     public List<CustomerModel> returnAllCustomers(){
        return mRepository.returnAllCustomers();
     }
@@ -96,5 +111,27 @@ public class ProductionViewModel extends AndroidViewModel {
 
     public CustomerModel getCustomer(int id){
         return mRepository.returnCustomer(id);
+    }
+
+    //Order
+    public void postOrder(String total, int customerId, String discountTotal, Billing billing, List<LineItemsItem> items){
+        mRepository.postOrder(total, customerId, discountTotal, billing, items);
+    }
+
+    //Production Orders
+    public List<ProductionModel> returnAllProductionModels(){
+        return mRepository.returnAllProductionOrders();
+    }
+
+    public ProductionModel returnProductionModel(int id){
+        return mRepository.returnProductionOrder(id);
+    }
+
+    public void insertProductionOrder(ProductionModel productionModel){
+        mRepository.insertProductionOrder(productionModel);
+    }
+
+    public void deleteProductionOrder(ProductionModel productionModel){
+        mRepository.deleteProductionOrder(productionModel);
     }
 }

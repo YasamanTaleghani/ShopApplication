@@ -17,6 +17,7 @@ public class NetworkParams {
     public static final String SEARCH = "search";
     public static final int PER_PAGE = 10;
     public static final String POST_CUSTOMERS = "customers";
+    public static final String POST_ORDERS = "orders";
 
     public static final Map<String,String> BASE_OPTIONS = new HashMap<String,String>(){{
         put("consumer_key", CONSUMER_KEY);
@@ -45,14 +46,6 @@ public class NetworkParams {
         highestRateOptions.putAll(HIGHEST_RATE_PRODUCTS_LIST);
 
         return highestRateOptions;
-    }
-
-    public static Map<String, String> getNewestOptions() {
-        Map<String, String> newestOptions = new HashMap<>();
-        newestOptions.putAll(BASE_OPTIONS);
-        newestOptions.putAll(NEWEST_PRODUCTS_LIST);
-
-        return newestOptions;
     }
 
     public static Map<String, String> getSearchOptions(String query){

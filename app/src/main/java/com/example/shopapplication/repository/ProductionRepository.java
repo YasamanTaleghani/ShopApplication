@@ -2,6 +2,7 @@ package com.example.shopapplication.repository;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
@@ -9,13 +10,18 @@ import androidx.room.Room;
 import com.example.shopapplication.database.AppDatabase;
 import com.example.shopapplication.database.CustomerDAO;
 import com.example.shopapplication.database.CustomerModel;
+import com.example.shopapplication.database.ProductionDAO;
+import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
+import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.model.CategoriesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.orders.OrdersResponse;
 
 
 import java.io.IOException;
@@ -28,16 +34,16 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductionRepository implements CustomerDAO {
+public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     private CustomerDAO mCustomerDAO;
+    private ProductionDAO mProductionDAO;
 
     public static final String TAG = "ProductionRepository";
     private ShopService mShopService;
     private static ProductionRepository mRepository = null;
     private int pageHighestRankedOrder = 1;
-    private int pageNewestItems = 1;
-    public static final int PAGE_ITEMS = 1;
+    private int pageCustomers = 1;
 
     private List<ProductsItem> mItemsRanked = new ArrayList<>();
     private List<ProductsItem> mItemsNewest = new ArrayList<>();
@@ -49,6 +55,7 @@ public class ProductionRepository implements CustomerDAO {
     private MutableLiveData<List<CategoryResponse>> mCategoryItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<CustomerResponse>> mCustomersLiveData = new MutableLiveData<>();
 
     //Constructor
     private ProductionRepository(Context context) {
@@ -57,6 +64,7 @@ public class ProductionRepository implements CustomerDAO {
         AppDatabase db = Room.databaseBuilder(context.getApplicationContext(),
                 AppDatabase.class, "database.db").build();
         mCustomerDAO = db.getCustomerDAO();
+        mProductionDAO = db.getProductionOrderDAO();
     }
 
     //Getter
@@ -82,6 +90,10 @@ public class ProductionRepository implements CustomerDAO {
 
     public MutableLiveData<List<ProductsItem>> getSearchItemsLiveData() {
         return mSearchItemsLiveData;
+    }
+
+    public MutableLiveData<List<CustomerResponse>> getCustomersLiveData() {
+        return mCustomersLiveData;
     }
 
     //Methods
@@ -138,6 +150,8 @@ public class ProductionRepository implements CustomerDAO {
                         }
 
                     }
+
+                    pageHighestRankedOrder =1;
                 }
 
                 @Override
@@ -243,13 +257,14 @@ public class ProductionRepository implements CustomerDAO {
         });
     }
 
-    public void postCustomer(String firstName, String lastName, String mail){
+    public void postCustomer(String firstName, String lastName, String mail, Billing billing){
 
         Call<CustomerResponse> call = mShopService.customerResponse(
                 NetworkParams.getBaseOptions(),
                 firstName,
                 lastName,
-                mail);
+                mail,
+                billing);
 
         call.enqueue(new Callback<CustomerResponse>() {
             @Override
@@ -280,6 +295,58 @@ public class ProductionRepository implements CustomerDAO {
         });
     }
 
+    public void fetchCustomers(){
+        Call<List<CustomerResponse>> call =
+                mShopService.listCustomers(NetworkParams.getBaseOptions(), pageCustomers);
+
+        call.enqueue(new Callback<List<CustomerResponse>>() {
+            @Override
+            public void onResponse(Call<List<CustomerResponse>> call, Response<List<CustomerResponse>> response) {
+                List<CustomerResponse> customers = response.body();
+                if (response.isSuccessful()){
+                    if (customers.size()==10){
+                        pageCustomers++;
+                        fetchCustomers();
+                    } else{
+                        mCustomersLiveData.setValue(customers);
+                    }
+
+                }
+                pageCustomers = 1;
+            }
+
+            @Override
+            public void onFailure(Call<List<CustomerResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void postOrder(String total, int customerId, String discountTotal,
+                          Billing billing, List<LineItemsItem> items){
+        Call<OrdersResponse> call = mShopService.orderResponse(
+                NetworkParams.getBaseOptions(),
+                total,
+                customerId,
+                discountTotal,
+                billing,
+                items);
+
+        call.enqueue(new Callback<OrdersResponse>() {
+            @Override
+            public void onResponse(Call<OrdersResponse> call, Response<OrdersResponse> response) {
+                if (response.isSuccessful()){
+                    Log.d(TAG, "Order: " + response.body().getId() + "is successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OrdersResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     //Data base
     @Override
     public List<CustomerModel> returnAllCustomers() {
@@ -304,5 +371,26 @@ public class ProductionRepository implements CustomerDAO {
     @Override
     public void deleteCustomer(CustomerModel customer) {
         mCustomerDAO.deleteCustomer(customer);
+    }
+
+    //
+    @Override
+    public List<ProductionModel> returnAllProductionOrders() {
+        return mProductionDAO.returnAllProductionOrders();
+    }
+
+    @Override
+    public ProductionModel returnProductionOrder(int productionOrderId) {
+        return mProductionDAO.returnProductionOrder(productionOrderId);
+    }
+
+    @Override
+    public void insertProductionOrder(ProductionModel productionModel) {
+        mProductionDAO.insertProductionOrder(productionModel);
+    }
+
+    @Override
+    public void deleteProductionOrder(ProductionModel productionModel) {
+        mProductionDAO.deleteProductionOrder(productionModel);
     }
 }

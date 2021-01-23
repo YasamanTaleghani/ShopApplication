@@ -144,12 +144,11 @@ public class CustomerResponse {
 
 	//constructor
 	public CustomerResponse(String firstName, String lastName, Billing billing,
-							String email, String username) {
+							String email) {
 		this.lastName = lastName;
 		this.billing = billing;
 		this.firstName = firstName;
 		this.email = email;
-		this.username = username;
 	}
 
 	public CustomerResponse() {

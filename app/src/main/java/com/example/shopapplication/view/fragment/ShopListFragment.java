@@ -1,5 +1,6 @@
 package com.example.shopapplication.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,14 +12,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
+import com.example.shopapplication.database.CustomerModel;
+import com.example.shopapplication.database.ProductionModel;
+import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.example.shopapplication.utilities.ShoppingListPreferences;
+import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.orders.OrdersResponse;
+import com.example.shopapplication.utilities.CustomerPreferences;
+import com.example.shopapplication.view.activity.LoginCustomerActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
-import com.google.android.material.card.MaterialCardView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopListFragment extends Fragment {
@@ -28,6 +36,7 @@ public class ShopListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private HorizontalRecyclerAdapter mAdapter;
+    private Button mButtonSendOrder;
 
     public ShopListFragment() {
         // Required empty public constructor
@@ -46,17 +55,22 @@ public class ShopListFragment extends Fragment {
 
         mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
 
-        String[] mIds = ShoppingListPreferences.getFavoriteList(getActivity());
-        int[] mIdItems = new int[mIds.length];
-        for (int i = 0; i < mIds.length ; i++) {
-            mIdItems[i] = Integer.parseInt(mIds[i]);
+        int customerId = CustomerPreferences.getCustomerIfPreferences
+                (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
+        List<ProductionModel> mIdItems = mProductionViewModel.returnAllProductionModels();
+        List<ProductionModel> productionModelList = new ArrayList<>();
+        for (int i = 0; i < mIdItems.size() ; i++) {
+            if (mIdItems.get(i).customerId==customerId)
+                productionModelList.add(mIdItems.get(i));
         }
-        for (int i = 0; i < mIdItems.length; i++) {
-            mProductionViewModel.fetchItem(mIdItems[i]);
+
+        for (int i = 0; i < productionModelList.size(); i++) {
+            mProductionViewModel.fetchItem(productionModelList.get(i).productionId);
             mProductionViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
                 @Override
                 public void onChanged(ProductsItem productsItem) {
                     mProductsItems.add(productsItem);
+                    setUpAdapter(mProductsItems);
                 }
             });
         }
@@ -69,13 +83,15 @@ public class ShopListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shop_list, container, false);
 
         findView(view);
-        setUpAdapter(mProductsItems);
+        //setUpAdapter(mProductsItems);
+        setListeners();
 
         return view;
     }
 
     private void findView(View view) {
         mRecyclerView = view.findViewById(R.id.recyclerView_shop_list);
+        mButtonSendOrder =  view.findViewById(R.id.btn_send_order);
     }
 
     private void setUpAdapter(List<ProductsItem> items) {
@@ -89,5 +105,57 @@ public class ShopListFragment extends Fragment {
         }
     }
 
+    private void setListeners() {
+        mButtonSendOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int customerId = CustomerPreferences.getCustomerIfPreferences(
+                        getActivity(), CustomerPreferences.PREF_SHOP_LIST);
+
+                int totalPrice = 0;
+
+                if (customerId==0){
+                    Intent intent = LoginCustomerActivity.newIntent(getContext());
+                    startActivity(intent);
+                } else {
+                    List<ProductionModel> allProducts = mProductionViewModel.returnAllProductionModels();
+                    List<LineItemsItem> items = new ArrayList<>();
+                    for (int i = 0; i < allProducts.size() ; i++) {
+                        if (allProducts.get(i).customerId==customerId || allProducts.get(i).customerId==0){
+                            ProductionModel production = allProducts.get(i);
+                            LineItemsItem item = new LineItemsItem(
+                                    production.getProductionPrice(),
+                                    production.productionId,
+                                    production.productionName);
+
+                            totalPrice += Integer.parseInt(production.ProductionPrice);
+
+                            items.add(item);
+                        }
+                    }
+
+                    CustomerModel customerModel = mProductionViewModel.getCustomer(customerId);
+                    Billing billing = new Billing(
+                            customerModel.country,
+                            customerModel.city,
+                            customerModel.phone,
+                            customerModel.address1,
+                            customerModel.address2,
+                            null,
+                            customerModel.lastName,
+                            customerModel.state,
+                            customerModel.firstName,
+                            customerModel.mail);
+
+                    mProductionViewModel.postOrder(
+                            String.valueOf(totalPrice),
+                            customerId,
+                            null,
+                            billing,
+                            items);
+                }
+            }
+        });
+    }
 
 }
