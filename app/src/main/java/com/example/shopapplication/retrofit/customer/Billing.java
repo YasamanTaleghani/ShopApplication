@@ -132,4 +132,7 @@ public class Billing{
 		this.firstName = firstName;
 		this.email = email;
 	}
+
+	public Billing() {
+	}
 }

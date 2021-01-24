@@ -21,6 +21,6 @@ public interface ProductionDAO {
     @Insert
     void insertProductionOrder(ProductionModel productionModel);
 
-    @Delete
-    void deleteProductionOrder(ProductionModel productionModel);
+    @Query("DELETE FROM products")
+    void deleteAllProcusts();
 }

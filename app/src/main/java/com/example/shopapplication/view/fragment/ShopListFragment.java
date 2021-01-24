@@ -1,6 +1,7 @@
 package com.example.shopapplication.view.fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
@@ -43,6 +45,9 @@ public class ShopListFragment extends Fragment {
     private ShopListAdapter mAdapter;
     private Button mButtonSendOrder;
     private TextView mTextViewTotalPrice;
+
+    private ArrayList<ProductionModel> orderItems= new ArrayList<>();
+    int totalPrice = 0;
 
     public ShopListFragment() {
         // Required empty public constructor
@@ -71,7 +76,7 @@ public class ShopListFragment extends Fragment {
 
         findView(view);
 
-        int customerId = CustomerPreferences.getCustomerIfPreferences
+        String customerEmail = CustomerPreferences.getCustomerIfPreferences
                 (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
 
         mProductionViewModel.returnAllProductionModels().observe(
@@ -82,6 +87,7 @@ public class ShopListFragment extends Fragment {
                         getProductionIds(productionModels);
                     }
                 });
+
         setListeners();
 
         return view;
@@ -97,7 +103,7 @@ public class ShopListFragment extends Fragment {
     }
 
     private void initView(List<ProductionModel> productionModels) {
-        int totalPrice = 0;
+
         if (productionModels.size()>0) {
             for (int i = 0; i < productionModels.size() ; i++) {
                 totalPrice += Integer.parseInt(productionModels.get(i).ProductionPrice);
@@ -123,57 +129,50 @@ public class ShopListFragment extends Fragment {
                     (new LinearLayoutManager(
                             getActivity(),
                             LinearLayoutManager.VERTICAL, false));
+
+            for (int i = 0; i < items.size() ; i++) {
+                orderItems.add(items.get(i));
+            }
         }
+
     }
 
     private void setListeners() {
         mButtonSendOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int customerId = CustomerPreferences.getCustomerIfPreferences(
+                String customerEmail = CustomerPreferences.getCustomerIfPreferences(
                         getActivity(), CustomerPreferences.PREF_SHOP_LIST);
 
-                int totalPrice = 0;
 
-                if (customerId==0){
+                if (customerEmail==null){
                     Intent intent = LoginCustomerActivity.newIntent(getContext());
                     startActivity(intent);
                 } else {
-                    List<ProductionModel> allProducts = mProductionViewModel.returnAllProductionModels().getValue();
+
+                    String totalPriceOrder = String.valueOf(totalPrice);
+                    int customerId = CustomerPreferences.getCustomerId(
+                            getActivity(), CustomerPreferences.CUSTOMER_ID);
+
                     List<LineItemsItem> items = new ArrayList<>();
-                    for (int i = 0; i < allProducts.size() ; i++) {
-                        if (allProducts.get(i).customerId==customerId || allProducts.get(i).customerId==0){
-                            ProductionModel production = allProducts.get(i);
-                            LineItemsItem item = new LineItemsItem(
-                                    production.getProductionPrice(),
-                                    production.productionId,
-                                    production.productionName);
+                    for (int i = 0; i < orderItems.size() ; i++) {
+                        LineItemsItem item = new LineItemsItem(
+                                orderItems.get(i).ProductionPrice,
+                                orderItems.get(i).id,
+                                orderItems.get(i).productionName);
 
-                            totalPrice += Integer.parseInt(production.ProductionPrice);
-
-                            items.add(item);
-                        }
+                        items.add(item);
                     }
 
-                    CustomerModel customerModel = mProductionViewModel.getCustomer(customerId);
-                    Billing billing = new Billing(
-                            customerModel.country,
-                            customerModel.city,
-                            customerModel.phone,
-                            customerModel.address1,
-                            customerModel.address2,
-                            null,
-                            customerModel.lastName,
-                            customerModel.state,
-                            customerModel.firstName,
-                            customerModel.mail);
-
                     mProductionViewModel.postOrder(
-                            String.valueOf(totalPrice),
+                            totalPriceOrder,
                             customerId,
-                            null,
-                            billing,
-                            items);
+                            "0");
+
+                    Toast.makeText(getActivity(), "سفارش شما با موفقیت به ثبت رسید", Toast.LENGTH_LONG).show();
+                    getActivity().finish();
+                    //TODO: delete all products
+                    mProductionViewModel.deleteAllProductionOrder();
                 }
             }
         });

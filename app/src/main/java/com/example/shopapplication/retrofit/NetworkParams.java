@@ -15,13 +15,14 @@ public class NetworkParams {
     public static final String ORDER_BY_DATE = "date";
     public static final String ASC = "asc";
     public static final String SEARCH = "search";
-    public static final int PER_PAGE = 10;
+    public static final String PER_PAGE = "10";
     public static final String POST_CUSTOMERS = "customers";
     public static final String POST_ORDERS = "orders";
 
     public static final Map<String,String> BASE_OPTIONS = new HashMap<String,String>(){{
         put("consumer_key", CONSUMER_KEY);
         put("consumer_secret", CONSUMER_SECRET);
+        put("per_page", PER_PAGE);
     }};
 
     public static final Map<String,String> HIGHEST_RATE_PRODUCTS_LIST = new HashMap<String,String>(){{

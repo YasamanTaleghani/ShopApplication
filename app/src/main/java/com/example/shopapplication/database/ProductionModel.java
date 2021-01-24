@@ -9,7 +9,7 @@ public class ProductionModel {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
-    public int customerId;
+    public String customerEmail;
 
     public int productionId;
 
@@ -24,8 +24,8 @@ public class ProductionModel {
         return id;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public String getCustomerId() {
+        return customerEmail;
     }
 
     public int getProductionId() {
@@ -41,9 +41,9 @@ public class ProductionModel {
     }
 
     //Constructor
-    public ProductionModel(int customerId, int productionId, String productionName,
+    public ProductionModel(int customerId, String customerEmail, String productionName,
                            String productionPrice, String productionSrc) {
-        this.customerId = customerId;
+        this.customerEmail = customerEmail;
         this.productionId = productionId;
         this.productionName = productionName;
         ProductionPrice = productionPrice;

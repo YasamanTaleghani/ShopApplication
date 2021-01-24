@@ -44,8 +44,7 @@ public interface ShopService {
             @QueryMap Map<String, String> options,
             @Field("first_name") String firstName,
             @Field("last_name") String lastName,
-            @Field("email") String email,
-            @Field("billing")Billing billing);
+            @Field("email") String email);
 
     @GET(NetworkParams.POST_CUSTOMERS)
     Call<List<CustomerResponse>> listCustomers
@@ -58,7 +57,6 @@ public interface ShopService {
             @QueryMap Map<String, String> options,
             @Field("total") String total,
             @Field("customer_id") int customerId,
-            @Field("discountTotal") String discountTotal,
-            @Field("billing") Billing billing,
-            @Field("line_items")List<LineItemsItem> items);
+            @Field("discountTotal") String discountTotal);
+            //@Field("line_items")List<LineItemsItem> items);
 }

@@ -50,6 +50,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     private List<ProductsItem> mItemsRanked = new ArrayList<>();
     private List<ProductsItem> mItemsNewest = new ArrayList<>();
+    private List<CustomerResponse> mCustomers = new ArrayList<>();
     private boolean request = true;
 
     private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData = new MutableLiveData<>();
@@ -60,6 +61,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CustomerResponse>> mCustomersLiveData = new MutableLiveData<>();
     private LiveData<List<ProductionModel>> allProducts;
+    private LiveData<List<CustomerModel>> allCustomers;
 
     //Constructor
     private ProductionRepository(Application application) {
@@ -69,6 +71,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         mCustomerDAO = db.getCustomerDAO();
         mProductionDAO = db.getProductionOrderDAO();
         allProducts = mProductionDAO.returnAllProductionOrders();
+        allCustomers = mCustomerDAO.returnAllCustomers();
     }
 
     //Getter
@@ -127,7 +130,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                         List<ProductsItem> productsItems = response.body();
 
                         for (int i = 0; i <productsItems.size() ; i++) {
-                            Log.d(TAG, "product:" + (i+1) + productsItems.get(i).getName());
+                            //Log.d(TAG, "product:" + (i+1) + productsItems.get(i).getName());
                             mItemsRanked.add(productsItems.get(i));
                             mItemsNewest.add(productsItems.get(i));
                         }
@@ -151,6 +154,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                                 }
                             });
                             mNewestItemsLiveData.setValue(mItemsNewest);
+                            pageHighestRankedOrder =1;
                         }
 
                     }
@@ -260,32 +264,25 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
-    public void postCustomer(String firstName, String lastName, String mail, Billing billing){
+    public void postCustomer(String firstName, String lastName, String mail){
 
         Call<CustomerResponse> call = mShopService.customerResponse(
                 NetworkParams.getBaseOptions(),
                 firstName,
                 lastName,
-                mail,
-                billing);
+                mail);
 
         call.enqueue(new Callback<CustomerResponse>() {
             @Override
             public void onResponse(Call<CustomerResponse> call, Response<CustomerResponse> response) {
                 CustomerResponse customer = response.body();
                 if (response.isSuccessful()){
-                    Log.d(TAG, "customer id: " + customer.getId() );
+                    Log.d("postCustomer", "customer id: " + customer.getId());
                     CustomerModel customerModel = new CustomerModel(
                             customer.getId(),
                             customer.getFirstName(),
                             customer.getLastName(),
-                            customer.getBilling().getPhone(),
-                            customer.getEmail(),
-                            customer.getBilling().getCity(),
-                            customer.getBilling().getState(),
-                            customer.getBilling().getCountry(),
-                            customer.getBilling().getAddress1(),
-                            customer.getBilling().getAddress2());
+                            customer.getEmail());
 
                     insertCustomer(customerModel);
                 }
@@ -302,20 +299,24 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         Call<List<CustomerResponse>> call =
                 mShopService.listCustomers(NetworkParams.getBaseOptions(), pageCustomers);
 
+        //Log.d("customer", "page is: " + pageCustomers);
+
         call.enqueue(new Callback<List<CustomerResponse>>() {
             @Override
             public void onResponse(Call<List<CustomerResponse>> call, Response<List<CustomerResponse>> response) {
                 List<CustomerResponse> customers = response.body();
                 if (response.isSuccessful()){
                     if (customers.size()==10){
+                        for (int i = 0; i < customers.size(); i++) {
+                            mCustomers.add(customers.get(i));
+                        }
                         pageCustomers++;
                         fetchCustomers();
                     } else{
-                        mCustomersLiveData.setValue(customers);
+                        mCustomersLiveData.setValue(mCustomers);
+                        pageCustomers = 1;
                     }
-
                 }
-                pageCustomers = 1;
             }
 
             @Override
@@ -325,15 +326,12 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
-    public void postOrder(String total, int customerId, String discountTotal,
-                          Billing billing, List<LineItemsItem> items){
+    public void postOrder(String total, int customerId, String discountTotal){
         Call<OrdersResponse> call = mShopService.orderResponse(
                 NetworkParams.getBaseOptions(),
                 total,
                 customerId,
-                discountTotal,
-                billing,
-                items);
+                discountTotal);
 
         call.enqueue(new Callback<OrdersResponse>() {
             @Override
@@ -352,18 +350,18 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     //Data base
     @Override
-    public List<CustomerModel> returnAllCustomers() {
-        return mCustomerDAO.returnAllCustomers();
+    public LiveData<List<CustomerModel>> returnAllCustomers() {
+        return allCustomers;
     }
 
     @Override
-    public CustomerModel returnCustomer(int customerId) {
-        return mCustomerDAO.returnCustomer(customerId);
+    public CustomerModel returnCustomer(String customerEmail) {
+        return mCustomerDAO.returnCustomer(customerEmail);
     }
 
     @Override
     public void insertCustomer(CustomerModel customer) {
-        mCustomerDAO.insertCustomer(customer);
+        new InsertCustomerAsyncTask(mCustomerDAO).execute(customer);
     }
 
     @Override
@@ -393,8 +391,8 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     }
 
     @Override
-    public void deleteProductionOrder(ProductionModel productionModel) {
-        mProductionDAO.deleteProductionOrder(productionModel);
+    public void deleteAllProcusts() {
+        new DeleteAllProductsAsyncTask(mProductionDAO).execute();
     }
 
     public static class InsertProductionToShopListAsyncTask extends AsyncTask<ProductionModel, Void, Void>{
@@ -407,6 +405,35 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         @Override
         protected Void doInBackground(ProductionModel... productionModels) {
             mProductionDAO.insertProductionOrder(productionModels[0]);
+            return null;
+        }
+    }
+
+    public static class InsertCustomerAsyncTask extends AsyncTask<CustomerModel, Void, Void>{
+
+        private CustomerDAO mCustomerDAO;
+
+        public InsertCustomerAsyncTask(CustomerDAO customerDAO) {
+            mCustomerDAO = customerDAO;
+        }
+
+        @Override
+        protected Void doInBackground(CustomerModel... customerModels) {
+            mCustomerDAO.insertCustomer(customerModels[0]);
+            return null;
+        }
+    }
+
+    public static class DeleteAllProductsAsyncTask extends AsyncTask<ProductionModel, Void, Void>{
+
+        private ProductionDAO mProductionDAO;
+        public DeleteAllProductsAsyncTask(ProductionDAO productionDAO) {
+            mProductionDAO = productionDAO;
+        }
+
+        @Override
+        protected Void doInBackground(ProductionModel... productionModels) {
+            mProductionDAO.deleteAllProcusts();
             return null;
         }
     }

@@ -107,7 +107,7 @@ public class DetailFragment extends Fragment {
         mButtonBuy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int customerId = CustomerPreferences.getCustomerIfPreferences
+                String customerEmail = CustomerPreferences.getCustomerIfPreferences
                         (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
 
                 mViewModel.fetchItem(mId);
@@ -115,8 +115,8 @@ public class DetailFragment extends Fragment {
                     @Override
                     public void onChanged(ProductsItem productsItem) {
                         ProductionModel production = new ProductionModel(
-                                customerId,
                                 mId,
+                                customerEmail,
                                 productsItem.getName(),
                                 productsItem.getPrice()
                                 ,productsItem.getImages().get(0).getSrc());

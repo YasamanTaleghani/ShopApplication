@@ -29,6 +29,7 @@ public class ProductionViewModel extends AndroidViewModel {
     private final LiveData<List<ProductsItem>> mSearchItemsLiveData;
     private final LiveData<List<CustomerResponse>> mCustomersLiveData;
     private LiveData<List<ProductionModel>> getAllProducts;
+    private LiveData<List<CustomerModel>> getAllCustomers;
 
     //Constructor
     public ProductionViewModel(@NonNull Application application) {
@@ -42,6 +43,7 @@ public class ProductionViewModel extends AndroidViewModel {
         mSearchItemsLiveData = mRepository.getSearchItemsLiveData();
         mCustomersLiveData = mRepository.getCustomersLiveData();
         getAllProducts = mRepository.returnAllProductionOrders();
+        getAllCustomers = mRepository.returnAllCustomers();
     }
 
     //Getter
@@ -98,26 +100,26 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.fetchCustomers();
     }
 
-    public void postCustomer(String firstName, String lastName, String mail, Billing billing){
-        mRepository.postCustomer(firstName,lastName,mail, billing);
+    public void postCustomer(String firstName, String lastName, String mail){
+        mRepository.postCustomer(firstName,lastName,mail);
     }
 
     //Customer
-    public List<CustomerModel> returnAllCustomers(){
-       return mRepository.returnAllCustomers();
+    public LiveData<List<CustomerModel>> returnAllCustomers(){
+       return getAllCustomers;
     }
 
     public void insertCustomer(CustomerModel customer){
         mRepository.insertCustomer(customer);
     }
 
-    public CustomerModel getCustomer(int id){
-        return mRepository.returnCustomer(id);
+    public CustomerModel getCustomer(String mail){
+        return mRepository.returnCustomer(mail);
     }
 
     //Order
-    public void postOrder(String total, int customerId, String discountTotal, Billing billing, List<LineItemsItem> items){
-        mRepository.postOrder(total, customerId, discountTotal, billing, items);
+    public void postOrder(String total, int customerId, String discountTotal){
+        mRepository.postOrder(total, customerId, discountTotal);
     }
 
     //Production Orders
@@ -133,7 +135,7 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.insertProductionOrder(productionModel);
     }
 
-    public void deleteProductionOrder(ProductionModel productionModel){
-        mRepository.deleteProductionOrder(productionModel);
+    public void deleteAllProductionOrder(){
+        mRepository.deleteAllProcusts();
     }
 }

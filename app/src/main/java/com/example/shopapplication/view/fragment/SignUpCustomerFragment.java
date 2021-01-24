@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.database.CustomerModel;
@@ -25,8 +26,7 @@ public class SignUpCustomerFragment extends Fragment {
 
     private ProductionViewModel mViewModel;
 
-    private EditText mEditTextFirstName, mEditTextLastName, mEditTextPhone, mEditTextMail,
-            mEditTextCountry, mEditTextState, mEditTextCity, mEditTextAddress1, mEditTextAddress2;
+    private EditText mEditTextFirstName, mEditTextLastName, mEditTextMail;
     private Button mButtonSubmit;
 
     public SignUpCustomerFragment() {
@@ -62,13 +62,8 @@ public class SignUpCustomerFragment extends Fragment {
     private void findViews(View view) {
         mEditTextFirstName = view.findViewById(R.id.name_editText);
         mEditTextLastName = view.findViewById(R.id.lastName_editText);
-        mEditTextPhone = view.findViewById(R.id.phone_editText);
         mEditTextMail = view.findViewById(R.id.mail_editText);
-        mEditTextCountry = view.findViewById(R.id.country_editText);
-        mEditTextState = view.findViewById(R.id.state_editText);
-        mEditTextCity = view.findViewById(R.id.city_editText);
-        mEditTextAddress1 = view.findViewById(R.id.addredd1_editText);
-        mEditTextAddress2 = view.findViewById(R.id.addredd2_editText);
+
         mButtonSubmit = view.findViewById(R.id.submit);
     }
 
@@ -76,42 +71,27 @@ public class SignUpCustomerFragment extends Fragment {
         mButtonSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Billing billing = new Billing(
-                        mEditTextCountry.toString(),
-                        mEditTextCity.toString(),
-                        mEditTextPhone.toString(),
-                        mEditTextAddress1.toString(),
-                        mEditTextAddress2.toString(),
-                        null,
-                        mEditTextLastName.toString(),
-                        mEditTextState.toString(),
-                        mEditTextFirstName.toString(),
-                        mEditTextMail.toString());
 
                 CustomerResponse customer =
                         new CustomerResponse(
-                                mEditTextFirstName.toString(),
-                                mEditTextLastName.toString(),
-                                billing,
-                                mEditTextMail.toString());
+                                mEditTextFirstName.getText().toString(),
+                                mEditTextLastName.getText().toString(),
+                                new Billing(),
+                                mEditTextMail.getText().toString());
 
                 mViewModel.postCustomer(customer.getFirstName(), customer.getLastName(),
-                        customer.getEmail(), customer.getBilling());
+                        customer.getEmail());
 
                 CustomerModel customerModel = new CustomerModel(
                         customer.getId(),
                         customer.getFirstName(),
                         customer.getLastName(),
-                        customer.getBilling().getPhone(),
-                        customer.getEmail(),
-                        customer.getBilling().getCity(),
-                        customer.getBilling().getState(),
-                        customer.getBilling().getCountry(),
-                        customer.getBilling().getAddress1(),
-                        customer.getBilling().getAddress2());
+                        customer.getEmail());
 
                 mViewModel.insertCustomer(customerModel);
-                CustomerPreferences.putCustomerInPreferences(getActivity(), customer.getId());
+                CustomerPreferences.putCustomerInPreferences(getActivity(), customer.getEmail());
+                Toast.makeText(getActivity(), "کاربر جدید ثبت شد", Toast.LENGTH_LONG).show();
+                getActivity().finish();
             }
         });
     }

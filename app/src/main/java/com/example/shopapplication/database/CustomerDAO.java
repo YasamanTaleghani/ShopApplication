@@ -1,5 +1,6 @@
 package com.example.shopapplication.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -12,10 +13,10 @@ import java.util.List;
 public interface CustomerDAO {
 
     @Query("SELECT * FROM customer")
-    List<CustomerModel> returnAllCustomers();
+    LiveData<List<CustomerModel>> returnAllCustomers();
 
-    @Query("SELECT * FROM customer WHERE customerId IN (:customerId)")
-    CustomerModel returnCustomer(int customerId);
+    @Query("SELECT * FROM customer WHERE mail IN (:mail)")
+    CustomerModel returnCustomer(String mail);
 
     @Insert
     void insertCustomer(CustomerModel customer);
