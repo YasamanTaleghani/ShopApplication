@@ -1,5 +1,6 @@
 package com.example.shopapplication.database;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface ProductionDAO {
 
     @Query("SELECT * FROM products")
-    List<ProductionModel> returnAllProductionOrders();
+    LiveData<List<ProductionModel>> returnAllProductionOrders();
 
     @Query("SELECT * FROM products WHERE productionId IN (:productionOrderId)")
     ProductionModel returnProductionOrder (int productionOrderId);

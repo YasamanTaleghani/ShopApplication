@@ -28,11 +28,12 @@ public class ProductionViewModel extends AndroidViewModel {
     private final LiveData<List<ProductsItem>> mItemsLiveData;
     private final LiveData<List<ProductsItem>> mSearchItemsLiveData;
     private final LiveData<List<CustomerResponse>> mCustomersLiveData;
+    private LiveData<List<ProductionModel>> getAllProducts;
 
     //Constructor
     public ProductionViewModel(@NonNull Application application) {
         super(application);
-        mRepository = ProductionRepository.getInstance(getApplication());
+        mRepository = ProductionRepository.getInstance(application);
         mHighestRankedItemsLiveData = mRepository.getHighestRankedItemsLiveData();
         mNewestItemsLiveData = mRepository.getNewestItemsLiveData();
         mItemLiveData = mRepository.getItemLiveData();
@@ -40,6 +41,7 @@ public class ProductionViewModel extends AndroidViewModel {
         mItemsLiveData = mRepository.getItemsLiveData();
         mSearchItemsLiveData = mRepository.getSearchItemsLiveData();
         mCustomersLiveData = mRepository.getCustomersLiveData();
+        getAllProducts = mRepository.returnAllProductionOrders();
     }
 
     //Getter
@@ -119,8 +121,8 @@ public class ProductionViewModel extends AndroidViewModel {
     }
 
     //Production Orders
-    public List<ProductionModel> returnAllProductionModels(){
-        return mRepository.returnAllProductionOrders();
+    public LiveData<List<ProductionModel>> returnAllProductionModels(){
+        return getAllProducts;
     }
 
     public ProductionModel returnProductionModel(int id){

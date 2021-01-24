@@ -1,11 +1,13 @@
 package com.example.shopapplication.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.retrofit.model.ImagesItem;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.example.shopapplication.utilities.CustomerPreferences;
+import com.example.shopapplication.view.activity.ShopListActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.smarteist.autoimageslider.SliderView;
 
@@ -115,12 +118,16 @@ public class DetailFragment extends Fragment {
                                 customerId,
                                 mId,
                                 productsItem.getName(),
-                                productsItem.getPrice());
+                                productsItem.getPrice()
+                                ,productsItem.getImages().get(0).getSrc());
+                        /*Log.d("tag", production.customerId + production.productionId +
+                                production.productionName + production.ProductionPrice);*/
                         mViewModel.insertProductionOrder(production);
                     }
                 });
 
-
+                Intent intent = ShopListActivity.newIntent(getContext());
+                startActivity(intent);
             }
         });
     }

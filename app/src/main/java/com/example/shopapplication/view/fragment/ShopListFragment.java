@@ -3,19 +3,24 @@ package com.example.shopapplication.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
+import com.example.shopapplication.adapter.ShopListAdapter;
 import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.retrofit.customer.Billing;
@@ -35,8 +40,9 @@ public class ShopListFragment extends Fragment {
     private List<ProductsItem> mProductsItems;
 
     private RecyclerView mRecyclerView;
-    private HorizontalRecyclerAdapter mAdapter;
+    private ShopListAdapter mAdapter;
     private Button mButtonSendOrder;
+    private TextView mTextViewTotalPrice;
 
     public ShopListFragment() {
         // Required empty public constructor
@@ -55,25 +61,6 @@ public class ShopListFragment extends Fragment {
 
         mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
 
-        int customerId = CustomerPreferences.getCustomerIfPreferences
-                (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
-        List<ProductionModel> mIdItems = mProductionViewModel.returnAllProductionModels();
-        List<ProductionModel> productionModelList = new ArrayList<>();
-        for (int i = 0; i < mIdItems.size() ; i++) {
-            if (mIdItems.get(i).customerId==customerId)
-                productionModelList.add(mIdItems.get(i));
-        }
-
-        for (int i = 0; i < productionModelList.size(); i++) {
-            mProductionViewModel.fetchItem(productionModelList.get(i).productionId);
-            mProductionViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
-                @Override
-                public void onChanged(ProductsItem productsItem) {
-                    mProductsItems.add(productsItem);
-                    setUpAdapter(mProductsItems);
-                }
-            });
-        }
     }
 
     @Override
@@ -83,20 +70,54 @@ public class ShopListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shop_list, container, false);
 
         findView(view);
-        //setUpAdapter(mProductsItems);
+
+        int customerId = CustomerPreferences.getCustomerIfPreferences
+                (getActivity(),CustomerPreferences.PREF_SHOP_LIST);
+
+        mProductionViewModel.returnAllProductionModels().observe(
+                getActivity(), new Observer<List<ProductionModel>>() {
+                    @Override
+                    public void onChanged(@Nullable List<ProductionModel> productionModels) {
+
+                        getProductionIds(productionModels);
+                    }
+                });
         setListeners();
 
         return view;
     }
 
+    private void getProductionIds(List<ProductionModel> productionModels) {
+        List<ProductionModel> shopList = new ArrayList<>();
+        for (int i = 0; i < productionModels.size() ; i++) {
+            shopList.add(productionModels.get(i));
+        }
+        setUpAdapter(shopList);
+        initView(shopList);
+    }
+
+    private void initView(List<ProductionModel> productionModels) {
+        int totalPrice = 0;
+        if (productionModels.size()>0) {
+            for (int i = 0; i < productionModels.size() ; i++) {
+                totalPrice += Integer.parseInt(productionModels.get(i).ProductionPrice);
+            }
+            mTextViewTotalPrice.setText(totalPrice + " هزار تومان");
+        } else {
+            mTextViewTotalPrice.setText("0" + "هزار تومان");
+        }
+    }
+
+
     private void findView(View view) {
         mRecyclerView = view.findViewById(R.id.recyclerView_shop_list);
         mButtonSendOrder =  view.findViewById(R.id.btn_send_order);
+        mTextViewTotalPrice = view.findViewById(R.id.text_view_totalprice);
     }
 
-    private void setUpAdapter(List<ProductsItem> items) {
+    private void setUpAdapter(List<ProductionModel> items) {
         if (items.size()>0){
-            mAdapter = new HorizontalRecyclerAdapter(getActivity(), items);
+            mAdapter = new ShopListAdapter(getActivity(), items);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setLayoutManager
                     (new LinearLayoutManager(
@@ -118,7 +139,7 @@ public class ShopListFragment extends Fragment {
                     Intent intent = LoginCustomerActivity.newIntent(getContext());
                     startActivity(intent);
                 } else {
-                    List<ProductionModel> allProducts = mProductionViewModel.returnAllProductionModels();
+                    List<ProductionModel> allProducts = mProductionViewModel.returnAllProductionModels().getValue();
                     List<LineItemsItem> items = new ArrayList<>();
                     for (int i = 0; i < allProducts.size() ; i++) {
                         if (allProducts.get(i).customerId==customerId || allProducts.get(i).customerId==0){

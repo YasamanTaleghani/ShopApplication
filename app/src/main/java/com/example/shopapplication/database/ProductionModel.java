@@ -3,10 +3,12 @@ package com.example.shopapplication.database;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "orders")
+@Entity(tableName = "products")
 public class ProductionModel {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+
     public int customerId;
 
     public int productionId;
@@ -15,7 +17,13 @@ public class ProductionModel {
 
     public String ProductionPrice;
 
+    public String productionSrc;
+
     //
+    public int getId() {
+        return id;
+    }
+
     public int getCustomerId() {
         return customerId;
     }
@@ -33,10 +41,15 @@ public class ProductionModel {
     }
 
     //Constructor
-    public ProductionModel(int customerId, int productionId, String productionName, String productionPrice) {
+    public ProductionModel(int customerId, int productionId, String productionName,
+                           String productionPrice, String productionSrc) {
         this.customerId = customerId;
         this.productionId = productionId;
         this.productionName = productionName;
         ProductionPrice = productionPrice;
+        this.productionSrc = productionSrc;
+    }
+
+    public ProductionModel() {
     }
 }

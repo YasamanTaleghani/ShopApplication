@@ -1,9 +1,12 @@
 package com.example.shopapplication.repository;
 
+import android.app.Application;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.room.Room;
 
@@ -56,15 +59,16 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     private MutableLiveData<List<ProductsItem>> mItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CustomerResponse>> mCustomersLiveData = new MutableLiveData<>();
+    private LiveData<List<ProductionModel>> allProducts;
 
     //Constructor
-    private ProductionRepository(Context context) {
+    private ProductionRepository(Application application) {
         mShopService = RetrofitInstance.getInstance().create(ShopService.class);
 
-        AppDatabase db = Room.databaseBuilder(context.getApplicationContext(),
-                AppDatabase.class, "database.db").build();
+        AppDatabase db = AppDatabase.getDataBase(application);
         mCustomerDAO = db.getCustomerDAO();
         mProductionDAO = db.getProductionOrderDAO();
+        allProducts = mProductionDAO.returnAllProductionOrders();
     }
 
     //Getter
@@ -97,9 +101,9 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     }
 
     //Methods
-    public static ProductionRepository getInstance(Context context) {
+    public static ProductionRepository getInstance(Application application) {
         if (mRepository == null) {
-            mRepository = new ProductionRepository(context);
+            mRepository = new ProductionRepository(application);
             return mRepository;
         } else {
             return mRepository;
@@ -151,7 +155,6 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
                     }
 
-                    pageHighestRankedOrder =1;
                 }
 
                 @Override
@@ -375,8 +378,8 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     //
     @Override
-    public List<ProductionModel> returnAllProductionOrders() {
-        return mProductionDAO.returnAllProductionOrders();
+    public LiveData<List<ProductionModel>> returnAllProductionOrders() {
+        return allProducts;
     }
 
     @Override
@@ -386,11 +389,25 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     @Override
     public void insertProductionOrder(ProductionModel productionModel) {
-        mProductionDAO.insertProductionOrder(productionModel);
+        new InsertProductionToShopListAsyncTask(mProductionDAO).execute(productionModel);
     }
 
     @Override
     public void deleteProductionOrder(ProductionModel productionModel) {
         mProductionDAO.deleteProductionOrder(productionModel);
+    }
+
+    public static class InsertProductionToShopListAsyncTask extends AsyncTask<ProductionModel, Void, Void>{
+
+        private ProductionDAO mProductionDAO;
+
+        public InsertProductionToShopListAsyncTask(ProductionDAO productionDAO) {
+            mProductionDAO = productionDAO;
+        }
+        @Override
+        protected Void doInBackground(ProductionModel... productionModels) {
+            mProductionDAO.insertProductionOrder(productionModels[0]);
+            return null;
+        }
     }
 }

@@ -107,7 +107,6 @@ public class LoginCustomerFragment extends Fragment {
                 mViewModel.insertCustomer(newCustomer);
                 CustomerPreferences.putCustomerInPreferences(getActivity(), newCustomer.customerId);
             }
-
         } else {
             Intent intent = SignUpCustomerActivity.newIntent(getContext());
             startActivity(intent);
