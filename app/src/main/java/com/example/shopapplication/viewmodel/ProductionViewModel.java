@@ -1,12 +1,22 @@
 package com.example.shopapplication.viewmodel;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
+import com.example.shopapplication.R;
 import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.repository.ProductionRepository;
@@ -15,6 +25,7 @@ import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.model.ProductsItem;
 import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.utilities.SettingPreferenses;
 
 import java.util.List;
 
@@ -137,5 +148,63 @@ public class ProductionViewModel extends AndroidViewModel {
 
     public void deleteAllProductionOrder(){
         mRepository.deleteAllProcusts();
+    }
+
+
+    public class MyWorker extends Worker{
+
+        public MyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
+        }
+
+        @NonNull
+        @Override
+        public Result doWork() {
+
+            int notificationOnOff =
+                    SettingPreferenses.getSettingOnOffPreferences
+                            ((Activity) getApplicationContext(), SettingPreferenses.SETTING_ON_OFF);
+
+            if (notificationOnOff ==1){
+                fetchHighestRankedAndNewestItemsAsync();
+                getAllProducts.observe(getApplication(), new Observer<List<ProductionModel>>() {
+                    @SuppressLint("WrongThread")
+                    @Override
+                    public void onChanged(List<ProductionModel> productionModels) {
+                        int newestServerItem = productionModels.get(0).getId();
+                        int newestAppItem = SettingPreferenses.getNewestItemPreferences
+                                ((Activity) getApplicationContext(), SettingPreferenses.NEWEST_APP_ITEM);
+                        if (newestAppItem==newestServerItem){
+                            displayNotification
+                                    ("اعلان",
+                                            "یک محصول جدید به فروشگاه اضافه شده است");
+                        }
+                    }
+                });
+            } else
+                return Result.retry();
+
+            return Result.success();
+        }
+
+        public void displayNotification(String title, String description){
+            NotificationManager notificationManager =
+                    (NotificationManager) getApplicationContext().getSystemService
+                            (Context.NOTIFICATION_SERVICE);
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel("simplifiedcoding",
+                        "simplifiedcoding", NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+
+            NotificationCompat.Builder notification = new NotificationCompat.Builder
+                    (getApplicationContext(), "simplifiedcoding")
+                    .setContentTitle(title)
+                    .setContentText(description)
+                    .setSmallIcon(R.mipmap.ic_launcher);
+
+            notificationManager.notify(1, notification.build());
+        }
     }
 }

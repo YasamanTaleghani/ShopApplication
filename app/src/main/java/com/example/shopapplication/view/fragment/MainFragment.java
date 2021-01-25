@@ -7,6 +7,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +19,15 @@ import android.view.ViewGroup;
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
 import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.utilities.SettingPreferenses;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MainFragment extends Fragment {
 
+    public static final String NOTIFICATION_TAG = "notificationTag";
     private RecyclerViewAdapter mNewestItemsAdapter;
     private RecyclerViewAdapter mHighestRankedAdapter;
     private RecyclerView mRecyclerViewNewestItems;
@@ -46,6 +51,28 @@ public class MainFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         fetchItems();
+        notificationWorkManager();
+
+    }
+
+    private void notificationWorkManager(){
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresStorageNotLow(true)
+                .build();
+
+        int timeInterval = SettingPreferenses.getTimeIntervalPreferences
+                (getActivity(), SettingPreferenses.TIME_INTERVAL);
+
+        PeriodicWorkRequest periodicWorkRequest=
+                new PeriodicWorkRequest.Builder(
+                        ProductionViewModel.MyWorker.class, timeInterval, TimeUnit.HOURS)
+                        .addTag(NOTIFICATION_TAG)
+                        .setConstraints(constraints)
+                        .build();
+
+        WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
 
     }
 
@@ -86,6 +113,9 @@ public class MainFragment extends Fragment {
     }
 
     private void setNewestItemsAdapter(List<ProductsItem> items) {
+
+        int newestItemsId = items.get(0).getId();
+        SettingPreferenses.putNewestAppItemPreferences(getActivity(), newestItemsId);
 
         if (items.size()>0){
             mNewestItemsAdapter = new RecyclerViewAdapter(getActivity(), items);

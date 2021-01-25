@@ -33,13 +33,13 @@ public class DetailFragment extends Fragment {
     private int mId;
     private ProductionViewModel mViewModel;
 
-
     private TextView mTextViewName;
     private TextView mTextViewPrice;
     private TextView mTextViewRate;
     private TextView mTextViewdesc;
     private List<ImagesItem> mImagesItems;
     private SliderView mSliderView;
+
     private Button mButtonBuy;
 
     public DetailFragment() {

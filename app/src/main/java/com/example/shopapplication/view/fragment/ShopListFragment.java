@@ -177,5 +177,4 @@ public class ShopListFragment extends Fragment {
             }
         });
     }
-
 }

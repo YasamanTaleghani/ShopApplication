@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.shopapplication.view.fragment.SettingDialogFragment;
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.CustomExpandableListAdapter;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id==R.id.menu_item_setting){
-            //TODO
-            //Open a setting dialog
+            SettingDialogFragment settingDialogFragment = SettingDialogFragment.newInstance();
+            settingDialogFragment.show(getSupportFragmentManager(), "settingTag");
         }
 
         if (id==R.id.menu_item_profile){
