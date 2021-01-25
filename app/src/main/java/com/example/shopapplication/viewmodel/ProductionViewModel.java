@@ -12,7 +12,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -21,10 +20,9 @@ import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.database.ProductionModel;
 import com.example.shopapplication.repository.ProductionRepository;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
-import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
-import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
+import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
 import com.example.shopapplication.utilities.SettingPreferenses;
 
 import java.util.List;
@@ -41,6 +39,7 @@ public class ProductionViewModel extends AndroidViewModel {
     private final LiveData<List<CustomerResponse>> mCustomersLiveData;
     private LiveData<List<ProductionModel>> getAllProducts;
     private LiveData<List<CustomerModel>> getAllCustomers;
+    private LiveData<List<ReviewsResponse>> getProductionReveiws;
 
     //Constructor
     public ProductionViewModel(@NonNull Application application) {
@@ -55,6 +54,7 @@ public class ProductionViewModel extends AndroidViewModel {
         mCustomersLiveData = mRepository.getCustomersLiveData();
         getAllProducts = mRepository.returnAllProductionOrders();
         getAllCustomers = mRepository.returnAllCustomers();
+        getProductionReveiws = mRepository.getReviewsLiveData();
     }
 
     //Getter
@@ -86,6 +86,10 @@ public class ProductionViewModel extends AndroidViewModel {
         return mCustomersLiveData;
     }
 
+    public LiveData<List<ReviewsResponse>> getReviewsLiveData(){
+        return getReviewsLiveData();
+    }
+
     //Methods
     public void fetchHighestRankedAndNewestItemsAsync(){
         mRepository.fetchItemsAsyncHighestRateAndNewest();
@@ -113,6 +117,10 @@ public class ProductionViewModel extends AndroidViewModel {
 
     public void postCustomer(String firstName, String lastName, String mail){
         mRepository.postCustomer(firstName,lastName,mail);
+    }
+
+    public void fetchReveiws(int productionId){
+        mRepository.fetchReviews(productionId);
     }
 
     //Customer
@@ -145,6 +153,8 @@ public class ProductionViewModel extends AndroidViewModel {
     public void insertProductionOrder(ProductionModel productionModel){
         mRepository.insertProductionOrder(productionModel);
     }
+
+
 
     public void deleteAllProductionOrder(){
         mRepository.deleteAllProcusts();

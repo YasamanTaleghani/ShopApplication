@@ -1,18 +1,15 @@
 package com.example.shopapplication.view.fragment;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.shopapplication.R;
-import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
 import com.example.shopapplication.adapter.ShopListAdapter;
-import com.example.shopapplication.database.CustomerModel;
 import com.example.shopapplication.database.ProductionModel;
-import com.example.shopapplication.retrofit.customer.Billing;
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.retrofit.orders.LineItemsItem;
-import com.example.shopapplication.retrofit.orders.OrdersResponse;
 import com.example.shopapplication.utilities.CustomerPreferences;
 import com.example.shopapplication.view.activity.LoginCustomerActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;

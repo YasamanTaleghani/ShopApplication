@@ -1,4 +1,4 @@
-package com.example.shopapplication.retrofit.model;
+package com.example.shopapplication.retrofit.Products;
 
 import com.google.gson.annotations.SerializedName;
 

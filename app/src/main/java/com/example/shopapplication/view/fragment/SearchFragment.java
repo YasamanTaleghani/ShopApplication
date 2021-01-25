@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.HorizontalRecyclerAdapter;
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
 import java.util.ArrayList;

@@ -6,8 +6,9 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.shopapplication.R;
+import com.example.shopapplication.adapter.ReviewRecyclerViewAdapter;
 import com.example.shopapplication.adapter.SliderAdapter;
 import com.example.shopapplication.database.ProductionModel;
-import com.example.shopapplication.retrofit.model.ImagesItem;
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.ImagesItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
+import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
 import com.example.shopapplication.utilities.CustomerPreferences;
 import com.example.shopapplication.view.activity.ShopListActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
@@ -39,8 +42,9 @@ public class DetailFragment extends Fragment {
     private TextView mTextViewdesc;
     private List<ImagesItem> mImagesItems;
     private SliderView mSliderView;
-
     private Button mButtonBuy;
+    private RecyclerView mRecyclerViewReview;
+    private ReviewRecyclerViewAdapter mAdapter;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -69,6 +73,14 @@ public class DetailFragment extends Fragment {
                 initView(productsItem);
             }
         });
+
+        mViewModel.fetchReveiws(mId);
+        mViewModel.getReviewsLiveData().observe(this, new Observer<List<ReviewsResponse>>() {
+            @Override
+            public void onChanged(List<ReviewsResponse> reviewsResponses) {
+                setUpReviewListeners(reviewsResponses);
+            }
+        });
     }
 
     @Override
@@ -90,6 +102,7 @@ public class DetailFragment extends Fragment {
         mTextViewdesc = view.findViewById(R.id.text_view_production_description);
         mSliderView =  view.findViewById(R.id.image_view_slider);
         mButtonBuy = view.findViewById(R.id.btn_add_to_buy_list);
+        mRecyclerViewReview = view.findViewById(R.id.review_recycler_view);
     }
 
     private void initView(ProductsItem item) {
@@ -130,5 +143,17 @@ public class DetailFragment extends Fragment {
                 startActivity(intent);
             }
         });
+    }
+
+    private void setUpReviewListeners(List<ReviewsResponse> reviewsResponses) {
+        if (reviewsResponses.size()>0){
+            mAdapter = new ReviewRecyclerViewAdapter(getActivity(), reviewsResponses);
+            mRecyclerViewReview.setAdapter(mAdapter);
+            mRecyclerViewReview.setLayoutManager
+                    (new LinearLayoutManager(
+                            getActivity(),
+                            LinearLayoutManager.HORIZONTAL,
+                            false));
+        }
     }
 }

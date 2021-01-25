@@ -3,24 +3,21 @@ package com.example.shopapplication.view.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
 import android.widget.TextView;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
-import com.example.shopapplication.retrofit.model.CategoriesItem;
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.CategoriesItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
 import java.util.ArrayList;

@@ -2,17 +2,15 @@ package com.example.shopapplication.retrofit;
 
 
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
-import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
-import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.retrofit.orders.OrdersResponse;
+import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
 
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -38,6 +36,19 @@ public interface ShopService {
             (@QueryMap Map<String, String> options,
              @Query("page") int pageSearch);
 
+    @GET(NetworkParams.POST_CUSTOMERS)
+    Call<List<CustomerResponse>> listCustomers
+            (@QueryMap Map<String, String> options,
+             @Query("page") int pageCustomers);
+
+    @GET(NetworkParams.REVIEWS)
+    Call<List<ReviewsResponse>> listReviews
+            (@QueryMap Map<String, String> options,
+             @Query("page") int pageCustomers,
+             @Query("product") int productId);
+
+
+    //POST
     @FormUrlEncoded
     @POST(NetworkParams.POST_CUSTOMERS)
     Call<CustomerResponse> customerResponse(
@@ -45,11 +56,6 @@ public interface ShopService {
             @Field("first_name") String firstName,
             @Field("last_name") String lastName,
             @Field("email") String email);
-
-    @GET(NetworkParams.POST_CUSTOMERS)
-    Call<List<CustomerResponse>> listCustomers
-            (@QueryMap Map<String, String> options,
-             @Query("page") int pageCustomers);
 
     @FormUrlEncoded
     @POST(NetworkParams.POST_ORDERS)
@@ -59,4 +65,6 @@ public interface ShopService {
             @Field("customer_id") int customerId,
             @Field("discountTotal") String discountTotal);
             //@Field("line_items")List<LineItemsItem> items);
+
+
 }

@@ -3,7 +3,7 @@ package com.example.shopapplication.retrofit;
 
 import android.media.Image;
 
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

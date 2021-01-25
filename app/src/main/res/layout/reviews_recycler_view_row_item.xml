@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/review_text_reviewer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        tools:text="yasaman"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="right">
+
+        <TextView
+            android:id="@+id/review_text_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="that is good!!!"
+            android:gravity="right"/>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

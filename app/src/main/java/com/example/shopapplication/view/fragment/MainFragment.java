@@ -18,7 +18,7 @@ import android.view.ViewGroup;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
-import com.example.shopapplication.retrofit.model.ProductsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.utilities.SettingPreferenses;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 

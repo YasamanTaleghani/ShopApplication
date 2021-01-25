@@ -1,14 +1,11 @@
 package com.example.shopapplication.repository;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.room.Room;
 
 import com.example.shopapplication.database.AppDatabase;
 import com.example.shopapplication.database.CustomerDAO;
@@ -19,15 +16,12 @@ import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.RetrofitInstance;
 import com.example.shopapplication.retrofit.ShopService;
 import com.example.shopapplication.retrofit.categories.CategoryResponse;
-import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
-import com.example.shopapplication.retrofit.model.CategoriesItem;
-import com.example.shopapplication.retrofit.model.ProductsItem;
-import com.example.shopapplication.retrofit.orders.LineItemsItem;
+import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.retrofit.orders.OrdersResponse;
+import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -47,10 +41,12 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     private static ProductionRepository mRepository = null;
     private int pageHighestRankedOrder = 1;
     private int pageCustomers = 1;
+    private int pageReviews = 1;
 
     private List<ProductsItem> mItemsRanked = new ArrayList<>();
     private List<ProductsItem> mItemsNewest = new ArrayList<>();
     private List<CustomerResponse> mCustomers = new ArrayList<>();
+    private List<ReviewsResponse> mReviews = new ArrayList<>();
     private boolean request = true;
 
     private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData = new MutableLiveData<>();
@@ -60,13 +56,13 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     private MutableLiveData<List<ProductsItem>> mItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ProductsItem>> mSearchItemsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<CustomerResponse>> mCustomersLiveData = new MutableLiveData<>();
+    private MutableLiveData<List<ReviewsResponse>> mReviewsLiveData = new MutableLiveData<>();
     private LiveData<List<ProductionModel>> allProducts;
     private LiveData<List<CustomerModel>> allCustomers;
 
     //Constructor
     private ProductionRepository(Application application) {
         mShopService = RetrofitInstance.getInstance().create(ShopService.class);
-
         AppDatabase db = AppDatabase.getDataBase(application);
         mCustomerDAO = db.getCustomerDAO();
         mProductionDAO = db.getProductionOrderDAO();
@@ -101,6 +97,14 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     public MutableLiveData<List<CustomerResponse>> getCustomersLiveData() {
         return mCustomersLiveData;
+    }
+
+    public LiveData<List<CustomerModel>> getAllCustomers() {
+        return allCustomers;
+    }
+
+    public MutableLiveData<List<ReviewsResponse>> getReviewsLiveData() {
+        return mReviewsLiveData;
     }
 
     //Methods
@@ -343,6 +347,36 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
             @Override
             public void onFailure(Call<OrdersResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void fetchReviews(int productId){
+        Call<List<ReviewsResponse>> call =
+                mShopService.listReviews(NetworkParams.getBaseOptions(), pageReviews, productId);
+
+        call.enqueue(new Callback<List<ReviewsResponse>>() {
+            @Override
+            public void onResponse(Call<List<ReviewsResponse>> call, Response<List<ReviewsResponse>> response) {
+                if (response.isSuccessful()){
+                    List<ReviewsResponse> reviews = response.body();
+                    if (reviews.size()>0){
+                        for (int i = 0; i < reviews.size() ; i++) {
+                            mReviews.add(reviews.get(i));
+                        }
+                    }
+                    if (reviews.size()==10){
+                        pageReviews++;
+                        fetchReviews(productId);
+                    } else {
+                        mReviewsLiveData.setValue(mReviews);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
 
             }
         });

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.shopapplication.R;
 import com.example.shopapplication.database.ProductionModel;
-import com.example.shopapplication.retrofit.model.ProductsItem;
 
 import java.util.List;
 

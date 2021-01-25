@@ -18,6 +18,7 @@ public class NetworkParams {
     public static final String PER_PAGE = "10";
     public static final String POST_CUSTOMERS = "customers";
     public static final String POST_ORDERS = "orders";
+    public static final String REVIEWS = "products/reviews";
 
     public static final Map<String,String> BASE_OPTIONS = new HashMap<String,String>(){{
         put("consumer_key", CONSUMER_KEY);
