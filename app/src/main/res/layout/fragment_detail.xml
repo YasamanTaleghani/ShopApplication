@@ -14,40 +14,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical"
             tools:context=".view.fragment.DetailFragment">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_gravity="center"
                     android:layout_marginStart="16dp"
-                    android:src="@drawable/ic_star"
-                    android:layout_gravity="center">
-                </ImageView>
+                    android:src="@drawable/ic_star"></ImageView>
 
                 <TextView
                     android:id="@+id/text_view_production_rate"
                     android:layout_width="48dp"
                     android:layout_height="36dp"
-                    tools:text="4.5"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    tools:text="4.5" />
 
                 <TextView
                     android:id="@+id/text_view_production_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
                     android:gravity="right"
                     android:text="نام محصول"
-                    android:layout_gravity="center_vertical"
                     android:textSize="12dp" />
 
             </LinearLayout>
@@ -86,28 +84,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginLeft="18dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="18dp">
 
                 <TextView
                     android:id="@+id/text_view_production_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:gravity="left"
-                    android:layout_gravity="center_vertical"
                     android:text="Price of Production"
                     android:textSize="18dp" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginRight="18dp">
 
                 <ScrollView
@@ -132,27 +130,73 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="18dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="18dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/review_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp">
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="120dp"></androidx.recyclerview.widget.RecyclerView>
 
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/review_form"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="18dp"
+                android:hint="نظر خود را وارد کنید"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/review_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/rating_form"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="18dp"
+                android:hint="امتیاز خود را وارد کنید"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/rating_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_review"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="18dp"
+                android:text="افزودن نظر">
+            </Button>
 
             <TextView
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="کلیه حقوق مادی و معنوی این نرم افزار محفوظ می باشد"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:textColor="@color/colorBackgroundPrimary"
-                android:layout_gravity="center"/>
+                android:text="کلیه حقوق مادی و معنوی این نرم افزار محفوظ می باشد"
+                android:textColor="@color/colorBackgroundPrimary" />
 
         </LinearLayout>
 
@@ -162,11 +206,11 @@
         android:id="@+id/btn_add_to_buy_list"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="افزودن به سبد خرید"
-        android:visibility="visible"
+        android:layout_gravity="bottom"
         android:layout_margin="8dp"
         android:layout_marginTop="16dp"
+        android:text="افزودن به سبد خرید"
         android:textSize="18dp"
-        android:layout_gravity="bottom"/>
+        android:visibility="visible" />
 
 </FrameLayout>

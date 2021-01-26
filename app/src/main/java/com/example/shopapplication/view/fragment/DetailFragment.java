@@ -9,11 +9,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.shopapplication.R;
 import com.example.shopapplication.adapter.ReviewRecyclerViewAdapter;
@@ -23,6 +26,7 @@ import com.example.shopapplication.retrofit.Products.ImagesItem;
 import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
 import com.example.shopapplication.utilities.CustomerPreferences;
+import com.example.shopapplication.view.activity.LoginCustomerActivity;
 import com.example.shopapplication.view.activity.ShopListActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.smarteist.autoimageslider.SliderView;
@@ -45,6 +49,8 @@ public class DetailFragment extends Fragment {
     private Button mButtonBuy;
     private RecyclerView mRecyclerViewReview;
     private ReviewRecyclerViewAdapter mAdapter;
+    private EditText mEditTextReview, mEditTextRating;
+    private Button mButtonAddReview;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -64,7 +70,9 @@ public class DetailFragment extends Fragment {
 
         if (getArguments() != null){
             mId = getArguments().getInt(ARG_PRODUCTION_ID,-100);
+            Log.d("p","production id is: " + mId);
         }
+
         mViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
         mViewModel.fetchItem(mId);
         mViewModel.getItemLiveData().observe(this, new Observer<ProductsItem>() {
@@ -79,8 +87,10 @@ public class DetailFragment extends Fragment {
             @Override
             public void onChanged(List<ReviewsResponse> reviewsResponses) {
                 setUpReviewListeners(reviewsResponses);
+                //Log.d("reviews", "review observer");
             }
         });
+
     }
 
     @Override
@@ -103,6 +113,9 @@ public class DetailFragment extends Fragment {
         mSliderView =  view.findViewById(R.id.image_view_slider);
         mButtonBuy = view.findViewById(R.id.btn_add_to_buy_list);
         mRecyclerViewReview = view.findViewById(R.id.review_recycler_view);
+        mEditTextReview = view.findViewById(R.id.review_editText);
+        mEditTextRating = view.findViewById(R.id.rating_editText);
+        mButtonAddReview = view.findViewById(R.id.btn_review);
     }
 
     private void initView(ProductsItem item) {
@@ -141,6 +154,40 @@ public class DetailFragment extends Fragment {
 
                 Intent intent = ShopListActivity.newIntent(getContext());
                 startActivity(intent);
+            }
+        });
+
+        mButtonAddReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String reviewText = mEditTextReview.getText().toString();
+                String reviewRating = mEditTextRating.getText().toString();
+                if (reviewText==null || reviewText.length()==0){
+                    Toast.makeText
+                            (getActivity(),
+                                    "نظر خود را وارد کنید.", Toast.LENGTH_SHORT).show();
+                } else if(reviewRating==null || reviewRating.length()==0){
+                    Toast.makeText
+                            (getActivity(),
+                                    "امتیاز خود را وارد کنید.", Toast.LENGTH_SHORT).show();
+                } else if
+                (CustomerPreferences.getCustomerId(getActivity(), CustomerPreferences.CUSTOMER_ID)==0){
+                    Intent intent = LoginCustomerActivity.newIntent(getContext());
+                    startActivity(intent);
+                } else {
+                    int customerId =
+                            CustomerPreferences.getCustomerId(getActivity(), CustomerPreferences.CUSTOMER_ID);
+
+                    mViewModel.fetchSpecificCustomer(customerId, getActivity());
+                    mViewModel.postReview(
+                            mId,
+                            mEditTextReview.getText().toString(),
+                            CustomerPreferences.getCustomerIfPreferences
+                                    (getActivity(), CustomerPreferences.CUSTOMER_NAME),
+                            CustomerPreferences.getCustomerIfPreferences
+                                    (getActivity(), CustomerPreferences.CUSTOMER_MAIL),
+                            Integer.parseInt(reviewRating));
+                }
             }
         });
     }

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 public class CustomerPreferences {
     public static final String PREF_SHOP_LIST = "customerEmail";
     public static final String CUSTOMER_ID = "customerId";
+    public static final String CUSTOMER_NAME = "customerName";
+    public static final String CUSTOMER_MAIL = "customerName";
 
     public static boolean putCustomerInPreferences(Activity activity,String customerEmail){
         SharedPreferences sharedPreferences = getSharedPreferences(activity);
@@ -38,5 +40,21 @@ public class CustomerPreferences {
         SharedPreferences sharedPreferences = getSharedPreferences(activity);
         int id = sharedPreferences.getInt(key, 0);
         return id;
+    }
+
+    public static boolean putCustomerNamePreferences(Activity activity,String customerEmail){
+        SharedPreferences sharedPreferences = getSharedPreferences(activity);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CUSTOMER_NAME, customerEmail);
+        editor.commit();
+        return true;
+    }
+
+    public static boolean putCustomerEmailPreferences(Activity activity,String customerEmail){
+        SharedPreferences sharedPreferences = getSharedPreferences(activity);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CUSTOMER_MAIL, customerEmail);
+        editor.commit();
+        return true;
     }
 }

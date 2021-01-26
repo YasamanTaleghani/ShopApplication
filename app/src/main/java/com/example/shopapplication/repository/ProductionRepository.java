@@ -1,5 +1,6 @@
 package com.example.shopapplication.repository;
 
+import android.app.Activity;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.example.shopapplication.retrofit.customer.CustomerResponse;
 import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.retrofit.orders.OrdersResponse;
 import com.example.shopapplication.retrofit.reviews.ReviewsResponse;
+import com.example.shopapplication.utilities.CustomerPreferences;
 
 
 import java.util.ArrayList;
@@ -330,6 +332,27 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
+    public void fetchSpecificCustomer(int customerId, Activity activity){
+        Call<CustomerResponse> call =
+                mShopService.getCustomer(customerId, NetworkParams.getBaseOptions());
+
+        call.enqueue(new Callback<CustomerResponse>() {
+            @Override
+            public void onResponse(Call<CustomerResponse> call, Response<CustomerResponse> response) {
+                CustomerResponse customerResponse = response.body();
+                CustomerPreferences.putCustomerNamePreferences(activity,
+                        customerResponse.getFirstName() + customerResponse.getLastName());
+
+                CustomerPreferences.putCustomerEmailPreferences(activity, customerResponse.getEmail());
+            }
+
+            @Override
+            public void onFailure(Call<CustomerResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     public void postOrder(String total, int customerId, String discountTotal){
         Call<OrdersResponse> call = mShopService.orderResponse(
                 NetworkParams.getBaseOptions(),
@@ -352,7 +375,10 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
+    //Reviews
     public void fetchReviews(int productId){
+
+        mReviews = new ArrayList<>();
         Call<List<ReviewsResponse>> call =
                 mShopService.listReviews(NetworkParams.getBaseOptions(), pageReviews, productId);
 
@@ -361,8 +387,10 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
             public void onResponse(Call<List<ReviewsResponse>> call, Response<List<ReviewsResponse>> response) {
                 if (response.isSuccessful()){
                     List<ReviewsResponse> reviews = response.body();
-                    if (reviews.size()>0){
+                    if (reviews!=null && reviews.size()>0){
+                        Log.d("reviews", "reviews size is: " + reviews.size());
                         for (int i = 0; i < reviews.size() ; i++) {
+                            Log.d("reviews", "review: " + reviews.get(i).getId() + reviews.get(i).getReview());
                             mReviews.add(reviews.get(i));
                         }
                     }
@@ -371,12 +399,31 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                         fetchReviews(productId);
                     } else {
                         mReviewsLiveData.setValue(mReviews);
+                        pageReviews =1;
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<List<ReviewsResponse>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void postReview(int productId, String review, String reviewer, String reviewerEmail, int rating){
+        Call<ReviewsResponse> call =
+                mShopService.postReview
+                        (NetworkParams.getBaseOptions(), productId, review, reviewer, reviewerEmail, rating);
+
+        call.enqueue(new Callback<ReviewsResponse>() {
+            @Override
+            public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
+                Log.d(TAG, "Review: " + response.body().getId() + "is successful");
+            }
+
+            @Override
+            public void onFailure(Call<ReviewsResponse> call, Throwable t) {
 
             }
         });

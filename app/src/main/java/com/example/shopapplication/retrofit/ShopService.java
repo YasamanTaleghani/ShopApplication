@@ -36,7 +36,12 @@ public interface ShopService {
             (@QueryMap Map<String, String> options,
              @Query("page") int pageSearch);
 
-    @GET(NetworkParams.POST_CUSTOMERS)
+    @GET(NetworkParams.CUSTOMERS)
+    Call<CustomerResponse> getCustomer
+            (@Path("id") int customerId,
+             @QueryMap Map<String, String> options);
+
+    @GET(NetworkParams.CUSTOMERS)
     Call<List<CustomerResponse>> listCustomers
             (@QueryMap Map<String, String> options,
              @Query("page") int pageCustomers);
@@ -44,13 +49,12 @@ public interface ShopService {
     @GET(NetworkParams.REVIEWS)
     Call<List<ReviewsResponse>> listReviews
             (@QueryMap Map<String, String> options,
-             @Query("page") int pageCustomers,
+             @Query("page") int pageReviews,
              @Query("product") int productId);
-
 
     //POST
     @FormUrlEncoded
-    @POST(NetworkParams.POST_CUSTOMERS)
+    @POST(NetworkParams.CUSTOMERS)
     Call<CustomerResponse> customerResponse(
             @QueryMap Map<String, String> options,
             @Field("first_name") String firstName,
@@ -66,5 +70,13 @@ public interface ShopService {
             @Field("discountTotal") String discountTotal);
             //@Field("line_items")List<LineItemsItem> items);
 
-
+    @FormUrlEncoded
+    @POST(NetworkParams.REVIEWS)
+    Call<ReviewsResponse> postReview(
+            @QueryMap Map<String, String> options,
+            @Field("product_id") int productId,
+            @Field("review") String review,
+            @Field("reviewer") String reviewer,
+            @Field("reviewer_mail") String reviewerEmail,
+            @Field("rating") int rating);
 }

@@ -16,7 +16,7 @@ public class NetworkParams {
     public static final String ASC = "asc";
     public static final String SEARCH = "search";
     public static final String PER_PAGE = "10";
-    public static final String POST_CUSTOMERS = "customers";
+    public static final String CUSTOMERS = "customers";
     public static final String POST_ORDERS = "orders";
     public static final String REVIEWS = "products/reviews";
 

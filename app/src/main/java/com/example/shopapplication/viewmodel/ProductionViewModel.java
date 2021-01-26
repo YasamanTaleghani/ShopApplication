@@ -39,7 +39,7 @@ public class ProductionViewModel extends AndroidViewModel {
     private final LiveData<List<CustomerResponse>> mCustomersLiveData;
     private LiveData<List<ProductionModel>> getAllProducts;
     private LiveData<List<CustomerModel>> getAllCustomers;
-    private LiveData<List<ReviewsResponse>> getProductionReveiws;
+    private final LiveData<List<ReviewsResponse>> getProductionReveiws;
 
     //Constructor
     public ProductionViewModel(@NonNull Application application) {
@@ -87,7 +87,7 @@ public class ProductionViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<ReviewsResponse>> getReviewsLiveData(){
-        return getReviewsLiveData();
+        return getProductionReveiws;
     }
 
     //Methods
@@ -119,8 +119,16 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.postCustomer(firstName,lastName,mail);
     }
 
+    public void fetchSpecificCustomer(int customerId,Activity activity){
+        mRepository.fetchSpecificCustomer(customerId, activity);
+    }
+
     public void fetchReveiws(int productionId){
         mRepository.fetchReviews(productionId);
+    }
+
+    public void postReview(int productId, String review, String reviewer, String reviewerEmail, int rating){
+        mRepository.postReview(productId, review, reviewer, reviewerEmail, rating);
     }
 
     //Customer
@@ -167,6 +175,7 @@ public class ProductionViewModel extends AndroidViewModel {
             super(context, workerParams);
         }
 
+        @SuppressLint("WrongThread")
         @NonNull
         @Override
         public Result doWork() {
