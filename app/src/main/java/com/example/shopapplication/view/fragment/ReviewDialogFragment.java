@@ -124,7 +124,6 @@ public class ReviewDialogFragment extends DialogFragment {
                 }
 
                 mViewModel.deleteReview(reviewId, getActivity());
-
                 dismiss();
             }
         });

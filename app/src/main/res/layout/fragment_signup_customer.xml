@@ -1,70 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".view.fragment.SignUpCustomerFragment"
+    android:gravity="center"
     android:orientation="vertical"
-    android:gravity="center">
+    tools:context=".view.fragment.SignUpCustomerFragment">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/name_form"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="نام"
-                    app:errorEnabled="true"
-                    app:helperText="*">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/name_form"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="نام"
+        app:errorEnabled="true"
+        app:helperText="*">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/name_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/name_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/lastName_form"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="نام خانوادگی"
-                    app:errorEnabled="true"
-                    app:helperText="*">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/lastName_form"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="نام خانوادگی"
+        app:errorEnabled="true"
+        app:helperText="*">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/lastName_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/lastName_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/mail_form"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="ایمیل"
-                    app:errorEnabled="true"
-                    app:helperText="*">
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/mail_form"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ایمیل"
+        app:errorEnabled="true"
+        app:helperText="*">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/mail_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/mail_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
 
-                </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-                <Button
-                    android:id="@+id/submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
-                    android:text="ثبت نام" />
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/addredd_form"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="آدرس"
+        app:errorEnabled="true"
+        app:helperText="*">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addredd_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/btn_map"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_location"
+        android:background="@color/white"
+        android:layout_gravity="left">
+    </ImageButton>
+
+    <Button
+        android:id="@+id/submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:text="ثبت نام" />
 
 </LinearLayout>

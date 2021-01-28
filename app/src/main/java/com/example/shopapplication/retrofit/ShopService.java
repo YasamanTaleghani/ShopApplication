@@ -82,19 +82,17 @@ public interface ShopService {
             @Field("reviewer_email") String reviewerEmail,
             @Field("rating") int rating);
 
-    @FormUrlEncoded
     @PUT(NetworkParams.REVIEWS)
     Call<ReviewsResponse> updateReview(
-            @Path("id") int reviewId,
+            @Path("id") int id,
             @QueryMap Map<String, String> options,
             @Field("review") String review,
             @Field("reviewer") String reviewer,
             @Field("reviewer_email") String reviewerEmail,
             @Field("rating") int rating);
 
-    @FormUrlEncoded
     @DELETE(NetworkParams.REVIEWS)
     Call<ReviewsResponse> deleteReview(
-            @Path("id") int reviewId,
+            @Path("id") int id,
             @QueryMap Map<String, String> options);
 }

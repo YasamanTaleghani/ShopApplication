@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.shopapplication.R;
@@ -50,7 +53,9 @@ public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecycl
             public void onClick(View view) {
                 int reviewId = mItems.get(position).getId();
                 ReviewDialogFragment reviewDialogFragment = ReviewDialogFragment.newInstance(reviewId);
-                reviewDialogFragment.getActivity().getSupportFragmentManager().beginTransaction();
+                FragmentActivity fr = (FragmentActivity) mContext;
+                FragmentManager fm = fr.getSupportFragmentManager();
+                reviewDialogFragment.show(fm , "reviewTag");
             }
         });
     }

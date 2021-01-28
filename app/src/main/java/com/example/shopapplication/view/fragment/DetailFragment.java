@@ -199,7 +199,7 @@ public class DetailFragment extends Fragment {
     private void setUpReviewListeners(List<ReviewsResponse> reviewsResponses) {
         //Log.d("review", "review recycler size is: " + reviewsResponses.size());
         if (reviewsResponses.size()>0){
-            mAdapter = new ReviewRecyclerViewAdapter(getActivity(), reviewsResponses);
+            mAdapter = new ReviewRecyclerViewAdapter(getContext(), reviewsResponses, getActivity());
             mRecyclerViewReview.setAdapter(mAdapter);
             mRecyclerViewReview.setLayoutManager
                     (new LinearLayoutManager(
