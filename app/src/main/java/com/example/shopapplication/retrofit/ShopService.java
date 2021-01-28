@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -77,6 +79,22 @@ public interface ShopService {
             @Field("product_id") int productId,
             @Field("review") String review,
             @Field("reviewer") String reviewer,
-            @Field("reviewer_mail") String reviewerEmail,
+            @Field("reviewer_email") String reviewerEmail,
             @Field("rating") int rating);
+
+    @FormUrlEncoded
+    @PUT(NetworkParams.REVIEWS)
+    Call<ReviewsResponse> updateReview(
+            @Path("id") int reviewId,
+            @QueryMap Map<String, String> options,
+            @Field("review") String review,
+            @Field("reviewer") String reviewer,
+            @Field("reviewer_email") String reviewerEmail,
+            @Field("rating") int rating);
+
+    @FormUrlEncoded
+    @DELETE(NetworkParams.REVIEWS)
+    Call<ReviewsResponse> deleteReview(
+            @Path("id") int reviewId,
+            @QueryMap Map<String, String> options);
 }

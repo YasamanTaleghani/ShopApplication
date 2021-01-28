@@ -8,7 +8,7 @@ public class CustomerPreferences {
     public static final String PREF_SHOP_LIST = "customerEmail";
     public static final String CUSTOMER_ID = "customerId";
     public static final String CUSTOMER_NAME = "customerName";
-    public static final String CUSTOMER_MAIL = "customerName";
+    public static final String CUSTOMER_MAIL = "customerEmail";
 
     public static boolean putCustomerInPreferences(Activity activity,String customerEmail){
         SharedPreferences sharedPreferences = getSharedPreferences(activity);
@@ -42,10 +42,10 @@ public class CustomerPreferences {
         return id;
     }
 
-    public static boolean putCustomerNamePreferences(Activity activity,String customerEmail){
+    public static boolean putCustomerNamePreferences(Activity activity,String customerName){
         SharedPreferences sharedPreferences = getSharedPreferences(activity);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(CUSTOMER_NAME, customerEmail);
+        editor.putString(CUSTOMER_NAME, customerName);
         editor.commit();
         return true;
     }

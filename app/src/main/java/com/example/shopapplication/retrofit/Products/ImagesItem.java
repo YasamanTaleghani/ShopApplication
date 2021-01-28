@@ -28,6 +28,8 @@ public class ImagesItem{
 	@SerializedName("id")
 	private int id;
 
+
+
 	public String getDateModifiedGmt(){
 		return dateModifiedGmt;
 	}
@@ -58,5 +60,13 @@ public class ImagesItem{
 
 	public int getId(){
 		return id;
+	}
+
+	public ImagesItem(String src) {
+		this.src = src;
+	}
+
+	public ImagesItem(int ic_loading) {
+		src = String.valueOf(ic_loading);
 	}
 }

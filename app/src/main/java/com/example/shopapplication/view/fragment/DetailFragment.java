@@ -87,7 +87,6 @@ public class DetailFragment extends Fragment {
             @Override
             public void onChanged(List<ReviewsResponse> reviewsResponses) {
                 setUpReviewListeners(reviewsResponses);
-                //Log.d("reviews", "review observer");
             }
         });
 
@@ -161,12 +160,13 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 String reviewText = mEditTextReview.getText().toString();
-                String reviewRating = mEditTextRating.getText().toString();
+                int reviewRating = Integer.parseInt(mEditTextRating.getText().toString());
                 if (reviewText==null || reviewText.length()==0){
                     Toast.makeText
                             (getActivity(),
                                     "نظر خود را وارد کنید.", Toast.LENGTH_SHORT).show();
-                } else if(reviewRating==null || reviewRating.length()==0){
+                } else if((mEditTextRating.getText().toString()==null ||
+                        (mEditTextRating.getText().toString().length()==0))){
                     Toast.makeText
                             (getActivity(),
                                     "امتیاز خود را وارد کنید.", Toast.LENGTH_SHORT).show();
@@ -175,31 +175,36 @@ public class DetailFragment extends Fragment {
                     Intent intent = LoginCustomerActivity.newIntent(getContext());
                     startActivity(intent);
                 } else {
-                    int customerId =
-                            CustomerPreferences.getCustomerId(getActivity(), CustomerPreferences.CUSTOMER_ID);
-
-                    mViewModel.fetchSpecificCustomer(customerId, getActivity());
+                    String customerName = CustomerPreferences.getCustomerIfPreferences
+                            (getActivity(), CustomerPreferences.CUSTOMER_NAME);
+                    String customerEmail = CustomerPreferences.getCustomerIfPreferences
+                            (getActivity(), CustomerPreferences.CUSTOMER_MAIL);
+                    String review = mEditTextReview.getText().toString();
                     mViewModel.postReview(
                             mId,
-                            mEditTextReview.getText().toString(),
-                            CustomerPreferences.getCustomerIfPreferences
-                                    (getActivity(), CustomerPreferences.CUSTOMER_NAME),
-                            CustomerPreferences.getCustomerIfPreferences
-                                    (getActivity(), CustomerPreferences.CUSTOMER_MAIL),
-                            Integer.parseInt(reviewRating));
+                            review,
+                            customerName,
+                            customerEmail,
+                            reviewRating,
+                            getActivity());
+
+                    mEditTextRating.setText("");
+                    mEditTextReview.setText("");
+
                 }
             }
         });
     }
 
     private void setUpReviewListeners(List<ReviewsResponse> reviewsResponses) {
+        //Log.d("review", "review recycler size is: " + reviewsResponses.size());
         if (reviewsResponses.size()>0){
             mAdapter = new ReviewRecyclerViewAdapter(getActivity(), reviewsResponses);
             mRecyclerViewReview.setAdapter(mAdapter);
             mRecyclerViewReview.setLayoutManager
                     (new LinearLayoutManager(
                             getActivity(),
-                            LinearLayoutManager.HORIZONTAL,
+                            LinearLayoutManager.VERTICAL,
                             false));
         }
     }

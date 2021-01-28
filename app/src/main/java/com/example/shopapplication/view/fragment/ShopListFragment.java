@@ -76,7 +76,6 @@ public class ShopListFragment extends Fragment {
                 getActivity(), new Observer<List<ProductionModel>>() {
                     @Override
                     public void onChanged(@Nullable List<ProductionModel> productionModels) {
-
                         getProductionIds(productionModels);
                     }
                 });

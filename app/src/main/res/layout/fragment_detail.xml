@@ -138,7 +138,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/review_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="wrap_content" />
 
             </com.google.android.material.card.MaterialCardView>
 

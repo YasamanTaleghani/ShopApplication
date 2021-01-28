@@ -80,16 +80,8 @@ public class SignUpCustomerFragment extends Fragment {
                                 mEditTextMail.getText().toString());
 
                 mViewModel.postCustomer(customer.getFirstName(), customer.getLastName(),
-                        customer.getEmail());
+                        customer.getEmail(), getActivity());
 
-                CustomerModel customerModel = new CustomerModel(
-                        customer.getId(),
-                        customer.getFirstName(),
-                        customer.getLastName(),
-                        customer.getEmail());
-
-                mViewModel.insertCustomer(customerModel);
-                CustomerPreferences.putCustomerInPreferences(getActivity(), customer.getEmail());
                 Toast.makeText(getActivity(), "کاربر جدید ثبت شد", Toast.LENGTH_LONG).show();
                 getActivity().finish();
             }

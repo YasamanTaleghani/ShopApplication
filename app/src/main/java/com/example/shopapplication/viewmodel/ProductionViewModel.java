@@ -115,8 +115,8 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.fetchCustomers();
     }
 
-    public void postCustomer(String firstName, String lastName, String mail){
-        mRepository.postCustomer(firstName,lastName,mail);
+    public void postCustomer(String firstName, String lastName, String mail, Activity activity){
+        mRepository.postCustomer(firstName,lastName,mail, activity);
     }
 
     public void fetchSpecificCustomer(int customerId,Activity activity){
@@ -127,8 +127,18 @@ public class ProductionViewModel extends AndroidViewModel {
         mRepository.fetchReviews(productionId);
     }
 
-    public void postReview(int productId, String review, String reviewer, String reviewerEmail, int rating){
-        mRepository.postReview(productId, review, reviewer, reviewerEmail, rating);
+    public void postReview(int productId, String review, String reviewer, String reviewerEmail,
+                           int rating, Activity activity){
+        mRepository.postReview(productId, review, reviewer, reviewerEmail, rating, activity);
+    }
+
+    public void updateReview(int reviewId, String review, String reviewer, String reviewerEmail,
+                             int rating, Activity activity){
+        mRepository.updateReview(reviewId, review, reviewer, reviewerEmail, rating, activity);
+    }
+
+    public void deleteReview(int reviewId,  Activity activity){
+        mRepository.deleteReview(reviewId, activity);
     }
 
     //Customer
@@ -161,8 +171,6 @@ public class ProductionViewModel extends AndroidViewModel {
     public void insertProductionOrder(ProductionModel productionModel){
         mRepository.insertProductionOrder(productionModel);
     }
-
-
 
     public void deleteAllProductionOrder(){
         mRepository.deleteAllProcusts();

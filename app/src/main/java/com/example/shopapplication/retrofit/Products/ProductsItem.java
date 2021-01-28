@@ -467,4 +467,12 @@ public class ProductsItem{
 		return dimensions;
 	}
 
+	public ProductsItem(String name, String price, List<ImagesItem> images) {
+		this.images = images;
+		this.name = name;
+		this.price = price;
+	}
+
+	public ProductsItem() {
+	}
 }

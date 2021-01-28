@@ -17,11 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.shopapplication.R;
+import com.example.shopapplication.adapter.InitialLoadingAdapter;
 import com.example.shopapplication.adapter.RecyclerViewAdapter;
+import com.example.shopapplication.retrofit.Products.ImagesItem;
+import com.example.shopapplication.retrofit.Products.LoadingProduct;
 import com.example.shopapplication.retrofit.Products.ProductsItem;
 import com.example.shopapplication.utilities.SettingPreferenses;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +34,7 @@ public class MainFragment extends Fragment {
     public static final String NOTIFICATION_TAG = "notificationTag";
     private RecyclerViewAdapter mNewestItemsAdapter;
     private RecyclerViewAdapter mHighestRankedAdapter;
+    private InitialLoadingAdapter mAdapterLoadingItems;
     private RecyclerView mRecyclerViewNewestItems;
     private RecyclerView mRecyclerViewHighestRanked;
 
@@ -50,9 +55,21 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        fetchItems();
         notificationWorkManager();
+        fetchItems();
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        findViews(view);
+        //initView();
+
+        return view;
     }
 
     private void notificationWorkManager(){
@@ -76,8 +93,24 @@ public class MainFragment extends Fragment {
 
     }
 
+    private void initView(){
+        List<LoadingProduct> productsItemsInitial = new ArrayList<>();
+        LoadingProduct item = new LoadingProduct(
+                "در حال بارگذاری",
+                "در حال بارگذاری",
+                R.drawable.ic_loading);
+
+        for (int i = 0; i < 10; i++) {
+            productsItemsInitial.add(item);
+        }
+
+        setInitialRecyclerView(productsItemsInitial, mRecyclerViewNewestItems);
+        setInitialRecyclerView(productsItemsInitial, mRecyclerViewHighestRanked);
+    }
+
     private void fetchItems() {
         mProductionViewModel = new ViewModelProvider(this).get(ProductionViewModel.class);
+
         mProductionViewModel.fetchHighestRankedAndNewestItemsAsync();
         mProductionViewModel.getHighestRankedItemsLiveData().observe(this,
                 new Observer<List<ProductsItem>>() {
@@ -96,16 +129,7 @@ public class MainFragment extends Fragment {
         });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        findViews(view);
-
-        return view;
-    }
 
     private void findViews(View view) {
         mRecyclerViewNewestItems = view.findViewById(R.id.recyclerViewNewestItems);
@@ -140,4 +164,15 @@ public class MainFragment extends Fragment {
         }
     }
 
+    private void setInitialRecyclerView(List<LoadingProduct> items, RecyclerView recyclerView){
+        if (items.size()>0){
+            mAdapterLoadingItems = new InitialLoadingAdapter(getContext(), items);
+            recyclerView.setAdapter(mAdapterLoadingItems);
+            recyclerView.setLayoutManager
+                    (new LinearLayoutManager(
+                            getActivity(),
+                            LinearLayoutManager.HORIZONTAL,
+                            true));
+        }
+    }
 }

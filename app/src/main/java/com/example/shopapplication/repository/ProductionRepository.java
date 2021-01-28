@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -44,11 +45,15 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     private int pageHighestRankedOrder = 1;
     private int pageCustomers = 1;
     private int pageReviews = 1;
+    private int pageProductionItems=1;
+    private int searchPage =1;
 
     private List<ProductsItem> mItemsRanked = new ArrayList<>();
     private List<ProductsItem> mItemsNewest = new ArrayList<>();
+    private List<ProductsItem> mProductsItems = new ArrayList<>();
     private List<CustomerResponse> mCustomers = new ArrayList<>();
     private List<ReviewsResponse> mReviews = new ArrayList<>();
+    private List<ProductsItem> mSearchItems = new ArrayList<>();
     private boolean request = true;
 
     private MutableLiveData<List<ProductsItem>> mHighestRankedItemsLiveData = new MutableLiveData<>();
@@ -176,7 +181,6 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
 
     }
 
-
     public void fetchItem(int id) {
         Call<ProductsItem> call = mShopService.item(id, NetworkParams.getBaseOptions());
 
@@ -207,9 +211,6 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                                    Response<List<CategoryResponse>> response) {
                 List<CategoryResponse> categoryResponses = response.body();
 
-                /*for (int i = 0; i < categoryResponses.size() ; i++) {
-                    Log.d(TAG, "Get Response: " + response.body().get(i).getName());
-                }*/
 
                 mCategoryItemsLiveData.setValue(categoryResponses);
             }
@@ -222,8 +223,11 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     }
 
     public void fetchProductionItemsAsync() {
+
+        mProductsItems = new ArrayList<>();
+
         Call<List<ProductsItem>> call =
-                mShopService.listItems(NetworkParams.getBaseOptions(),1);
+                mShopService.listItems(NetworkParams.getBaseOptions(), pageProductionItems);
 
         call.enqueue(new Callback<List<ProductsItem>>() {
             @Override
@@ -231,17 +235,15 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                                    Response<List<ProductsItem>> response) {
                 List<ProductsItem> items = response.body();
 
-                /*for (int i = 0; i < items.size() ; i++) {
-                    List<CategoriesItem> categories = response.body().get(i).getCategories();
-                    Log.d(TAG, "Get Response: " + response.body().get(i).getName());
-                    if(categories.size()>0){
-                        for (int j = 0; j < categories.size() ; j++) {
-                            Log.d(TAG, "Get Response: " + categories.get(j).getName());
-                        }
-                    }
-                }*/
+                mProductsItems.addAll(items);
+                if(items.size()==10){
+                    pageProductionItems++;
+                    fetchProductionItemsAsync();
+                } else {
+                    pageProductionItems =1;
+                    mItemsLiveData.setValue(items);
+                }
 
-                mItemsLiveData.setValue(items);
             }
 
             @Override
@@ -252,15 +254,26 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
     }
 
     public void fetchSearchItemsAsync(String query) {
+
+        mSearchItems = new ArrayList<>();
+
         Call<List<ProductsItem>> call =
-                mShopService.listSearchItems(NetworkParams.getSearchOptions(query), 1);
+                mShopService.listSearchItems(NetworkParams.getSearchOptions(query), searchPage);
 
         call.enqueue(new Callback<List<ProductsItem>>() {
             @Override
             public void onResponse(Call<List<ProductsItem>> call, Response<List<ProductsItem>> response) {
                 List<ProductsItem> searchItems = response.body();
 
-                mSearchItemsLiveData.setValue(searchItems);
+                mSearchItems.addAll(searchItems);
+                if (searchItems.size()==10){
+                    searchPage++;
+                    fetchSearchItemsAsync(query);
+                } else {
+                    searchPage =1;
+                    mSearchItemsLiveData.setValue(mSearchItems);
+                }
+
             }
 
             @Override
@@ -270,7 +283,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
-    public void postCustomer(String firstName, String lastName, String mail){
+    public void postCustomer(String firstName, String lastName, String mail, Activity activity){
 
         Call<CustomerResponse> call = mShopService.customerResponse(
                 NetworkParams.getBaseOptions(),
@@ -291,6 +304,11 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                             customer.getEmail());
 
                     insertCustomer(customerModel);
+
+                    CustomerPreferences.putCustomerId(activity, customer.getId());
+                    CustomerPreferences.putCustomerNamePreferences(activity,
+                            customer.getFirstName() + customer.getLastName());
+                    CustomerPreferences.putCustomerEmailPreferences(activity, customer.getEmail());
                 }
             }
 
@@ -340,10 +358,6 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
             @Override
             public void onResponse(Call<CustomerResponse> call, Response<CustomerResponse> response) {
                 CustomerResponse customerResponse = response.body();
-                CustomerPreferences.putCustomerNamePreferences(activity,
-                        customerResponse.getFirstName() + customerResponse.getLastName());
-
-                CustomerPreferences.putCustomerEmailPreferences(activity, customerResponse.getEmail());
             }
 
             @Override
@@ -388,9 +402,9 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
                 if (response.isSuccessful()){
                     List<ReviewsResponse> reviews = response.body();
                     if (reviews!=null && reviews.size()>0){
-                        Log.d("reviews", "reviews size is: " + reviews.size());
+                        //Log.d("reviews", "reviews size is: " + reviews.size());
                         for (int i = 0; i < reviews.size() ; i++) {
-                            Log.d("reviews", "review: " + reviews.get(i).getId() + reviews.get(i).getReview());
+                            //Log.d("reviews", "review: " + reviews.get(i).getId() + reviews.get(i).getReview());
                             mReviews.add(reviews.get(i));
                         }
                     }
@@ -411,7 +425,8 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         });
     }
 
-    public void postReview(int productId, String review, String reviewer, String reviewerEmail, int rating){
+    public void postReview(int productId, String review, String reviewer, String reviewerEmail,
+                           int rating, Activity activity){
         Call<ReviewsResponse> call =
                 mShopService.postReview
                         (NetworkParams.getBaseOptions(), productId, review, reviewer, reviewerEmail, rating);
@@ -419,7 +434,8 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
         call.enqueue(new Callback<ReviewsResponse>() {
             @Override
             public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
-                Log.d(TAG, "Review: " + response.body().getId() + "is successful");
+                //Log.d(TAG, "Review: " + response.isSuccessful());\
+                Toast.makeText(activity, "نظر شما ثبت شد", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -428,6 +444,52 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
             }
         });
     }
+
+    public void updateReview(int reviewId, String review, String reviewer, String reviewerEmail,
+                              int rating, Activity activity){
+        Call<ReviewsResponse> call =
+                mShopService.updateReview(
+                        reviewId,
+                        NetworkParams.getBaseOptions(),
+                        review,
+                        reviewer,
+                        reviewerEmail,
+                        rating);
+
+        call.enqueue(new Callback<ReviewsResponse>() {
+            @Override
+            public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
+                //Log.d(TAG, "Review: " + response.isSuccessful());\
+                Toast.makeText(activity, "نظر جدید ثبت شد", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ReviewsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public void deleteReview(int reviewId, Activity activity){
+        Call<ReviewsResponse> call =
+                mShopService.deleteReview(
+                        reviewId,
+                        NetworkParams.getBaseOptions());
+
+        call.enqueue(new Callback<ReviewsResponse>() {
+            @Override
+            public void onResponse(Call<ReviewsResponse> call, Response<ReviewsResponse> response) {
+                //Log.d(TAG, "Review: " + response.isSuccessful());\
+                Toast.makeText(activity, "نظر حذف گردید", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<ReviewsResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     //Data base
     @Override

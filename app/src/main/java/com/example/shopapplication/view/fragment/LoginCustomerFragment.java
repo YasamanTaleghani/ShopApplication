@@ -72,35 +72,13 @@ public class LoginCustomerFragment extends Fragment {
 
 
                 String mail = mEditText.getText().toString();
-                String sharedPref = CustomerPreferences.getCustomerIfPreferences
-                        (getActivity(), CustomerPreferences.PREF_SHOP_LIST);
-                Log.d("test", mail);
-                Log.d("test", sharedPref + "");
 
-                if (mail.equals(CustomerPreferences.getCustomerIfPreferences
-                        (getActivity(), CustomerPreferences.PREF_SHOP_LIST))) {
-                    Toast.makeText(getActivity(), "شما وارد شدید", Toast.LENGTH_SHORT).show();
+                /*if (mail.equals(CustomerPreferences.getCustomerIfPreferences
+                        (getActivity(), CustomerPreferences.CUSTOMER_MAIL))) {
+                    Toast.makeText(getActivity(), "شما وارد شدید", Toast.LENGTH_LONG).show();
                     isLogin = true;
                     getActivity().finish();
-                }
-
-                /*mViewModel.returnAllCustomers().observe(getViewLifecycleOwner(), new Observer<List<CustomerModel>>() {
-                    @Override
-                    public void onChanged(List<CustomerModel> customers) {
-                        if (customers!=null){
-                            for (int i = 0; i < customers.size() ; i++) {
-                                if (customers.get(i).mail.equals(mail)){
-                                    CustomerPreferences.putCustomerInPreferences
-                                            (getActivity(), customers.get(i).mail);
-
-                                    Toast.makeText(getActivity(), "شما وارد شدید", Toast.LENGTH_SHORT).show();
-                                    getActivity().finish();
-                                }
-                            }
-                        }
-                    }
-                });*/
-
+                }*/
                 mViewModel.fetchCustomers();
                 boolean finalIsLogin = isLogin;
                 mViewModel.getCustomersLiveData().observe(getViewLifecycleOwner(), new Observer<List<CustomerResponse>>() {
@@ -135,10 +113,15 @@ public class LoginCustomerFragment extends Fragment {
                     customer.getFirstName(),
                     customer.getLastName(),
                     customer.getEmail());
+            //mViewModel.insertCustomer(newCustomer);
 
-            mViewModel.insertCustomer(newCustomer);
-            CustomerPreferences.putCustomerInPreferences(getActivity(), newCustomer.mail);
             CustomerPreferences.putCustomerId(getActivity(), customer.getId());
+            CustomerPreferences.putCustomerNamePreferences(getActivity(),
+                    customer.getFirstName() + customer.getLastName());
+
+            CustomerPreferences.putCustomerEmailPreferences
+                    (getActivity(), customer.getEmail());
+
             Toast.makeText(getActivity(), "شما وارد شدید", Toast.LENGTH_SHORT).show();
             getActivity().finish();
         } else {
