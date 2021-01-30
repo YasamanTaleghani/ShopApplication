@@ -296,7 +296,7 @@ public class ProductionRepository implements CustomerDAO, ProductionDAO {
             public void onResponse(Call<CustomerResponse> call, Response<CustomerResponse> response) {
                 CustomerResponse customer = response.body();
                 if (response.isSuccessful()){
-                    Log.d("postCustomer", "customer id: " + customer.getId());
+                    //Log.d("postCustomer", "customer id: " + customer.getId());
                     CustomerModel customerModel = new CustomerModel(
                             customer.getId(),
                             customer.getFirstName(),

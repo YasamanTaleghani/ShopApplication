@@ -130,7 +130,6 @@ public class MainFragment extends Fragment {
     }
 
 
-
     private void findViews(View view) {
         mRecyclerViewNewestItems = view.findViewById(R.id.recyclerViewNewestItems);
         mRecyclerViewHighestRanked = view.findViewById(R.id.recyclerViewHighestRanked);

@@ -2,12 +2,13 @@ package com.example.shopapplication.view.fragment;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,24 +24,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.shopapplication.R;
-import com.example.shopapplication.database.CustomerModel;
-import com.example.shopapplication.database.ProductionModel;
-import com.example.shopapplication.retrofit.NetworkParams;
 import com.example.shopapplication.retrofit.customer.Billing;
 import com.example.shopapplication.retrofit.customer.CustomerResponse;
-import com.example.shopapplication.utilities.CustomerPreferences;
-import com.example.shopapplication.view.activity.MainActivity;
-import com.example.shopapplication.view.activity.SignUpCustomerActivity;
+import com.example.shopapplication.view.activity.MapsActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-
-import java.util.List;
 
 
 public class SignUpCustomerFragment extends Fragment {
@@ -52,8 +44,9 @@ public class SignUpCustomerFragment extends Fragment {
     private EditText mEditTextFirstName, mEditTextLastName, mEditTextMail, mEditTextAddress;
     private Button mButtonSubmit;
     private ImageButton mImageButtonMap;
-
     private FusedLocationProviderClient mClient;
+
+    private double mCurrentLat, mCurrentLng;
 
     public SignUpCustomerFragment() {
         // Required empty public constructor
@@ -127,6 +120,12 @@ public class SignUpCustomerFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+    }
+
     private void requestLocation() {
         if (ActivityCompat.checkSelfPermission
                 (getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
@@ -152,6 +151,10 @@ public class SignUpCustomerFragment extends Fragment {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 Location location = locationResult.getLocations().get(0);
+                mCurrentLat = location.getLatitude();
+                mCurrentLng = location.getLatitude();
+                Intent intent = MapsActivity.newIntent(getContext(), mCurrentLat, mCurrentLng);
+                startActivity(intent);
             }
         };
 

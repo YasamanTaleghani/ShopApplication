@@ -17,5 +17,7 @@
     <string name="beauty">زیبایی و سلامت</string>
     <string name="sale">فروش ویژه</string>
     <string name="home">خانه و آشپزخانه</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps2">Map</string>
 
 </resources>

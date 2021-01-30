@@ -1,0 +1,56 @@
+package com.example.shopapplication.retrofit.orders;
+
+import java.util.List;
+import com.google.gson.annotations.SerializedName;
+
+public class ShippingLinesItem{
+
+	@SerializedName("total")
+	private String total;
+
+	@SerializedName("method_id")
+	private String methodId;
+
+	@SerializedName("meta_data")
+	private List<Object> metaData;
+
+	@SerializedName("taxes")
+	private List<Object> taxes;
+
+	@SerializedName("id")
+	private int id;
+
+	@SerializedName("total_tax")
+	private String totalTax;
+
+	@SerializedName("method_title")
+	private String methodTitle;
+
+	public String getTotal(){
+		return total;
+	}
+
+	public String getMethodId(){
+		return methodId;
+	}
+
+	public List<Object> getMetaData(){
+		return metaData;
+	}
+
+	public List<Object> getTaxes(){
+		return taxes;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	public String getTotalTax(){
+		return totalTax;
+	}
+
+	public String getMethodTitle(){
+		return methodTitle;
+	}
+}
