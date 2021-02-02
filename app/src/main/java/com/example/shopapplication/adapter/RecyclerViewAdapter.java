@@ -43,7 +43,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        holder.mTextView.setText(mItems.get(position).getName());
+        String name = (mItems.get(position).getName()).substring(0,30) + "...";
+        holder.mTextView.setText(name);
         List<ImagesItem> images =(mItems.get(position).getImages());
         if (images.size()>0){
             Glide

@@ -36,8 +36,59 @@
             android:id="@+id/recyclerViewNewestItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorBackgroundRecycler1"
             android:layout_marginTop="20dp">
         </androidx.recyclerview.widget.RecyclerView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="18dp">
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_iconfinder_wallet_2208344"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_iconfinder_delivery_service_3615755"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="پرداخت در محل"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="تحویل اکسپرس"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp">
+        </View>
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,8 +114,25 @@
             android:id="@+id/recyclerViewHighestRanked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:background="@color/colorBackgroundRecycler2"
+            android:layout_marginTop="24dp">
         </androidx.recyclerview.widget.RecyclerView>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="18dp"
+            android:src="@drawable/ic_iconfinder_17_24_hours_open_6330649"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="پشتیبانی 24 ساعته"
+            android:gravity="center"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp">
+        </TextView>
 
     </LinearLayout>
 </ScrollView>

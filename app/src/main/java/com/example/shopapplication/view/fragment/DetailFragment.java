@@ -31,6 +31,10 @@ import com.example.shopapplication.view.activity.ShopListActivity;
 import com.example.shopapplication.viewmodel.ProductionViewModel;
 import com.smarteist.autoimageslider.SliderView;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import java.util.List;
 
 public class DetailFragment extends Fragment {
@@ -125,7 +129,10 @@ public class DetailFragment extends Fragment {
         mTextViewName.setText(item.getName());
         mTextViewPrice.setText(item.getPrice() + " تومان ");
         mTextViewRate.setText(item.getAverageRating());
-        mTextViewdesc.setText(item.getDescription());
+
+        Document document = Jsoup.parse(item.getDescription());
+        Elements paragraphs = document.getElementsByTag("p");
+        mTextViewdesc.setText(paragraphs.text());
     }
 
     private void setListeners(){

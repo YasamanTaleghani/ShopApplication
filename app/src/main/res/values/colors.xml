@@ -13,4 +13,6 @@
     <color name="orangePrimaryDark">#8C2505</color>
     <color name="colorTextPrimary">#2B2A2A</color>
     <color name="colorBackgroundPrimary">#AAA2A2</color>
+    <color name="colorBackgroundRecycler1">#54FF3C</color>
+    <color name="colorBackgroundRecycler2">#F63830</color>
 </resources>

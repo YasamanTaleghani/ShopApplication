@@ -20,6 +20,10 @@ import com.example.shopapplication.utilities.CustomerPreferences;
 import com.example.shopapplication.view.activity.LoginCustomerActivity;
 import com.example.shopapplication.view.fragment.ReviewDialogFragment;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import java.util.List;
 
 public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecyclerViewAdapter.ReviewViewHolder>{
@@ -46,7 +50,9 @@ public class ReviewRecyclerViewAdapter extends RecyclerView.Adapter<ReviewRecycl
     @Override
     public void onBindViewHolder(@NonNull ReviewViewHolder holder, int position) {
         holder.mTextViewReviwer.setText(mItems.get(position).getReviewer());
-        holder.mTextViewReview.setText(mItems.get(position).getReview());
+        Document document = Jsoup.parse(mItems.get(position).getReview());
+        Elements paragraphs = document.getElementsByTag("p");
+        holder.mTextViewReview.setText(paragraphs.text());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
